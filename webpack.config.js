@@ -46,7 +46,12 @@ const base = {
                     '@babel/plugin-proposal-object-rest-spread',
                     ['react-intl', {
                         messagesDir: './translations/messages/'
-                    }]],
+                    }],
+                    ["import", {
+                        "libraryName": "antd",
+                        "style": "css" // `style: true` 会加载 less 文件
+                    }]
+                ],
                 presets: [
                     ['@babel/preset-env', {targets: {browsers: ['last 3 versions', 'Safari >= 8', 'iOS >= 8']}}],
                     '@babel/preset-react'
@@ -55,6 +60,7 @@ const base = {
         },
         {
             test: /\.css$/,
+            exclude: [/[\\/]node_modules[\\/].*antd/],
             use: [{
                 loader: 'style-loader'
             }, {
@@ -78,6 +84,19 @@ const base = {
                             })
                         ];
                     }
+                }
+            }],
+        },
+        {
+            test: /\.css$/,
+            include: [/[\\/]node_modules[\\/].*antd/],
+            use: [{
+                loader: 'style-loader'
+            }, {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: 1,
+                    camelCase: true
                 }
             }]
         }]
