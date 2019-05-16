@@ -12,7 +12,9 @@ class MyHomepage extends React.Component {
     render () {
         return (
             <Fragment>
-
+                {/* 头部 */}
+                {/* 内容 */}
+                {/* 尾部 */}
             </Fragment>
         )
     }
