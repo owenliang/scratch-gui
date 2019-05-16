@@ -18,7 +18,12 @@ const base = {
     devServer: {
         contentBase: path.resolve(__dirname, 'build'),
         host: '0.0.0.0',
-        port: process.env.PORT || 8601
+        port: process.env.PORT || 8601,
+        proxy: {
+            '/api/*': {
+                target: 'http://localhost:8000'
+            }
+        }
     },
     output: {
         library: 'GUI',
@@ -121,6 +126,7 @@ module.exports = [
             'compatibilitytesting': './src/playground/compatibility-testing.jsx',
             'player': './src/playground/player.jsx',
             'login': './src/web/login/login.jsx',
+            'my_homepage': './src/web/my_homepage/my_homepage.jsx',
         },
         output: {
             path: path.resolve(__dirname, 'build'),
@@ -185,6 +191,12 @@ module.exports = [
                 template: 'src/web/tpl.ejs',
                 filename: 'login.html',
                 title: '登录'
+            }),
+            new HtmlWebpackPlugin({
+                chunks: ['lib.min', 'my_homepage'],
+                template: 'src/web/tpl.ejs',
+                filename: 'my_homepage.html',
+                title: '我的主页'
             }),
             new CopyWebpackPlugin([{
                 from: 'static',
