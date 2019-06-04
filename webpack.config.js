@@ -27,7 +27,7 @@ const base = {
     },
     output: {
         library: 'GUI',
-        filename: '[name].js'
+        filename: '[name].[chunkhash].js'
     },
     externals: {
         React: 'react',
@@ -165,7 +165,7 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
                 template: 'src/playground/index.ejs',
-                title: 'Scratch 3.0 GUI',
+                title: '123少儿编程|Scratch 3.0',
                 sentryConfig: process.env.SENTRY_CONFIG ? '"' + process.env.SENTRY_CONFIG + '"' : null
             }),
             new HtmlWebpackPlugin({

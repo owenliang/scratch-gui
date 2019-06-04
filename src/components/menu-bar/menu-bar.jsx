@@ -66,6 +66,7 @@ import dropdownCaret from './dropdown-caret.svg';
 import languageIcon from '../language-selector/language-icon.svg';
 
 import scratchLogo from './scratch-logo.svg';
+import logo123 from './logo123.png';
 
 import sharedMessages from '../../lib/shared-messages';
 
