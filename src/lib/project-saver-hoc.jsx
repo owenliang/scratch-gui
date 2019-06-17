@@ -207,8 +207,18 @@ const ProjectSaverHOC = function (WrappedComponent) {
             // while in the process of saving a project (e.g. the
             // serialized project refers to a newer asset than what
             // we just finished saving).
-            const savedVMState = this.props.vm.toJSON();
-            return Promise.all(this.props.vm.assets
+            // const savedVMState = this.props.vm.toJSON();
+            return this.props.vm.saveProjectSb3().then((code_blob) => {
+                return new Promise((resolve, reject) => {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var code64 = e.target.result.replace(/^data:.+;base64,/, '');
+                        resolve(code64);
+                    }
+                    reader.readAsDataURL(code_blob);
+                });
+            })
+            /*return Promise.all(this.props.vm.assets
                 .filter(asset => !asset.clean)
                 .map(
                     asset => storage.store(
@@ -220,7 +230,8 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         () => (asset.clean = true)
                     )
                 )
-            ).then(() => {
+            )*/
+            .then((code64) => {
                 // 截图
                 return new Promise((resolve, reject) => {
                     try {
@@ -228,7 +239,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         this.props.vm.renderer.requestSnapshot(dataURI => {
                             this.props.vm.postIOData('video', {forceTransparentPreview: false});
                             // 继续上传
-                            resolve(dataURI);
+                            resolve({dataURI: dataURI, code64:code64});
                         });
                         this.props.vm.renderer.draw();
                     } catch (e) {
@@ -238,10 +249,10 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         // to save the thumbnail is not vitally important to the user.
                     }
                 })
-            }).then((dataURI) => {
+            }).then(({dataURI, code64}) => {
                 const opts = {
                     body: JSON.stringify({
-                        code: savedVMState,
+                        code: code64,
                         thumbnail: dataURI,
                         projectId:  projectId,
                     }),
