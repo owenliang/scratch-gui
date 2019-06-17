@@ -4,7 +4,7 @@ import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-int
 import PropTypes from 'prop-types';
 import bindAll from 'lodash.bindall';
 import bowser from 'bowser';
-import React from 'react';
+import React, {Fragment} from 'react';
 
 import Box from '../box/box.jsx';
 import Button from '../button/button.jsx';
@@ -72,6 +72,8 @@ import scratchLogo from './scratch-logo.svg';
 import logo123 from './logo123.png';
 
 import sharedMessages from '../../lib/shared-messages';
+
+import LoginForm from '../login/login-form.jsx';
 
 const ariaMessages = defineMessages({
     language: {
@@ -476,6 +478,14 @@ class MenuBar extends React.Component {
                             <ShareButton className={styles.menuBarButton} onClick={this.onSaveProject}>上传作品</ShareButton>
                         </div>
                     </div>
+                </div>
+                <div className={styles.accountInfoGroup}>
+                    <div className={classNames(styles.menuBarItem, styles.hoverable)} >
+                        登录
+                    </div>
+                </div>
+                <div id={styles.loginContainer}>
+                    <LoginForm></LoginForm>
                 </div>
             </Box>
         );

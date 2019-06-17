@@ -128,6 +128,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 projectHost,
                 projectId,
                 reduxProjectId,
+                onUpdateProjectTitle,
                 setProjectId: setProjectIdProp,
                 /* eslint-enable no-unused-vars */
                 isFetchingWithId: isFetchingWithIdProp,

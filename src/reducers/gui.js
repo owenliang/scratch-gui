@@ -29,6 +29,8 @@ import throttle from 'redux-throttle';
 
 import decks from '../lib/libraries/decks/index.jsx';
 
+import loginCheckerReducer, {loginCheckerInitialState} from './login-checker';
+
 const guiMiddleware = compose(applyMiddleware(throttle(300, {leading: true, trailing: true})));
 
 const guiInitialState = {
@@ -57,7 +59,8 @@ const guiInitialState = {
     timeout: timeoutInitialState,
     toolbox: toolboxInitialState,
     vm: vmInitialState,
-    vmStatus: vmStatusInitialState
+    vmStatus: vmStatusInitialState,
+    loginChecker: loginCheckerInitialState,
 };
 
 const initPlayer = function (currentState) {
@@ -154,7 +157,8 @@ const guiReducer = combineReducers({
     timeout: timeoutReducer,
     toolbox: toolboxReducer,
     vm: vmReducer,
-    vmStatus: vmStatusReducer
+    vmStatus: vmStatusReducer,
+    loginChecker: loginCheckerReducer,
 });
 
 export {
