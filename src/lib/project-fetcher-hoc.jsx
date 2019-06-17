@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import {intlShape, injectIntl} from 'react-intl';
 import bindAll from 'lodash.bindall';
 import {connect} from 'react-redux';
+import xhr from 'xhr';
 
+import {setProjectTitle} from '../reducers/project-title';
 import {setProjectUnchanged} from '../reducers/project-changed';
 import {
     LoadingStates,
@@ -70,9 +72,37 @@ const ProjectFetcherHOC = function (WrappedComponent) {
         fetchProject (projectId, loadingState) {
             return storage
                 .load(storage.AssetType.Project, projectId, storage.DataFormat.SB3)
-                .then(projectAsset => {
+                .then((projectAsset) => {
+                    if (parseInt(projectId)) {
+                        return new Promise(
+                            (resolve, reject) => {
+                                // 再load一下元数据
+                                const opts = {
+                                    method: 'get',
+                                    url: `/api/project/v1/metadata/${projectId}`,
+                                    // If we set json:true then the body is double-stringified, so don't
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                };
+                                xhr(opts, (err, response) => {
+                                    if (err) return reject(err);
+
+                                    let r = JSON.parse(response['body']);
+                                    resolve({projectAsset: projectAsset, projectTitle: r['projectTitle']});
+                                });
+                            }
+                        );
+                    } else {
+                        return {projectAsset: projectAsset, projectTitle: null};
+                    }
+                })
+                .then(({projectAsset, projectTitle}) => {
                     if (projectAsset) {
                         this.props.onFetchedProjectData(projectAsset.data, loadingState);
+                        if (projectTitle) {
+                            this.props.onUpdateProjectTitle(projectTitle);
+                        }
                     } else {
                         // Treat failure to load as an error
                         // Throw to be caught by catch later on
@@ -125,7 +155,8 @@ const ProjectFetcherHOC = function (WrappedComponent) {
         projectHost: PropTypes.string,
         projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         reduxProjectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        setProjectId: PropTypes.func
+        setProjectId: PropTypes.func,
+        onUpdateProjectTitle: PropTypes.func,
     };
     ProjectFetcherComponent.defaultProps = {
         // assetHost: 'https://assets.scratch.mit.edu',
@@ -148,7 +179,8 @@ const ProjectFetcherHOC = function (WrappedComponent) {
         onFetchedProjectData: (projectData, loadingState) =>
             dispatch(onFetchedProjectData(projectData, loadingState)),
         setProjectId: projectId => dispatch(setProjectId(projectId)),
-        onProjectUnchanged: () => dispatch(setProjectUnchanged())
+        onProjectUnchanged: () => dispatch(setProjectUnchanged()),
+        onUpdateProjectTitle: (title) => dispatch(setProjectTitle(title)),
     });
     // Allow incoming props to override redux-provided props. Used to mock in tests.
     const mergeProps = (stateProps, dispatchProps, ownProps) => Object.assign(

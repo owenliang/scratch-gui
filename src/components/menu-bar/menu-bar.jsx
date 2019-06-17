@@ -28,7 +28,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
-import { Button as AntdButton, Radio, Icon } from 'antd';
+import { Input } from 'antd';
 
 import {
     autoUpdateProject,
@@ -155,7 +155,8 @@ class MenuBar extends React.Component {
             'handleLanguageMouseUp',
             'handleRestoreOption',
             'restoreOptionMessage',
-            'onSaveProject'
+            'onSaveProject',
+            'handleTitleChanged',
         ]);
     }
     componentDidMount () {
@@ -238,6 +239,10 @@ class MenuBar extends React.Component {
         if (!this.props.languageMenuOpen) {
             this.props.onClickLanguage(e);
         }
+    }
+    handleTitleChanged(event) {
+        console.log(event.target.value);
+        this.props.onUpdateProjectTitle(event.target.value);
     }
     onSaveProject() {
         if (this.props.isShowingWithId) {
@@ -458,12 +463,17 @@ class MenuBar extends React.Component {
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
-                        <Divider />
+                        <Divider className={classNames(styles.divider)} />
+                        <div className={classNames(styles.growable)}>
+                            <ProjectTitleInput
+                                className={classNames(styles.titleFieldGrowable)}
+                                onUpdateProjectTitle={this.props.onUpdateProjectTitle}
+                            />
+                        </div>
                         <div
-                            className={classNames(styles.menuBarItem, styles.hoverable)}
-                            onMouseUp={this.onSaveProject}
+                            className={classNames(styles.menuBarItem)}
                         >
-                            上传作品
+                            <ShareButton className={styles.menuBarButton} onClick={this.onSaveProject}>上传作品</ShareButton>
                         </div>
                     </div>
                 </div>

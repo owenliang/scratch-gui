@@ -252,6 +252,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
             }).then(({dataURI, code64}) => {
                 const opts = {
                     body: JSON.stringify({
+                        name: this.props.reduxProjectTitle,
                         code: code64,
                         thumbnail: dataURI,
                         projectId:  projectId,
