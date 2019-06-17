@@ -28,6 +28,8 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
+import { Button as AntdButton, Radio, Icon } from 'antd';
+
 import {
     autoUpdateProject,
     getIsUpdating,
@@ -35,7 +37,8 @@ import {
     manualUpdateProject,
     requestNewProject,
     remixProject,
-    saveProjectAsCopy
+    createProject,
+    saveProjectAsCopy, getIsShowingWithId, getIsShowingWithoutId
 } from '../../reducers/project-state';
 import {
     openAccountMenu,
@@ -151,7 +154,8 @@ class MenuBar extends React.Component {
             'handleKeyPress',
             'handleLanguageMouseUp',
             'handleRestoreOption',
-            'restoreOptionMessage'
+            'restoreOptionMessage',
+            'onSaveProject'
         ]);
     }
     componentDidMount () {
@@ -233,6 +237,13 @@ class MenuBar extends React.Component {
     handleLanguageMouseUp (e) {
         if (!this.props.languageMenuOpen) {
             this.props.onClickLanguage(e);
+        }
+    }
+    onSaveProject() {
+        if (this.props.isShowingWithId) {
+            this.props.onUpdateProject()
+        } else {
+            this.props.onCreateProject()
         }
     }
     restoreOptionMessage (deletedItem) {
@@ -366,25 +377,6 @@ class MenuBar extends React.Component {
                                         {newProjectMessage}
                                     </MenuItem>
                                 </MenuSection>
-                                {(this.props.canSave || this.props.canCreateCopy || this.props.canRemix) && (
-                                    <MenuSection>
-                                        {this.props.canSave ? (
-                                            <MenuItem onClick={this.handleClickSave}>
-                                                {saveNowMessage}
-                                            </MenuItem>
-                                        ) : []}
-                                        {this.props.canCreateCopy ? (
-                                            <MenuItem onClick={this.handleClickSaveAsCopy}>
-                                                {createCopyMessage}
-                                            </MenuItem>
-                                        ) : []}
-                                        {this.props.canRemix ? (
-                                            <MenuItem onClick={this.handleClickRemix}>
-                                                {remixMessage}
-                                            </MenuItem>
-                                        ) : []}
-                                    </MenuSection>
-                                )}
                                 <MenuSection>
                                     <SBFileUploader onUpdateProjectTitle={this.props.onUpdateProjectTitle}>
                                         {(className, renderFileInput, loadProject) => (
@@ -466,6 +458,13 @@ class MenuBar extends React.Component {
                                 </MenuSection>
                             </MenuBarMenu>
                         </div>
+                        <Divider />
+                        <div
+                            className={classNames(styles.menuBarItem, styles.hoverable)}
+                            onMouseUp={this.onSaveProject}
+                        >
+                            上传作品
+                        </div>
                     </div>
                 </div>
             </Box>
@@ -523,7 +522,11 @@ MenuBar.propTypes = {
     renderLogin: PropTypes.func,
     sessionExists: PropTypes.bool,
     showComingSoon: PropTypes.bool,
-    username: PropTypes.string
+    username: PropTypes.string,
+    isShowingWithId: PropTypes.bool,
+    isShowingWithoutId: PropTypes.bool,
+    onUpdateProject: PropTypes.func,
+    onCreateProject: PropTypes.func,
 };
 
 MenuBar.defaultProps = {
@@ -545,7 +548,9 @@ const mapStateToProps = state => {
         projectChanged: state.scratchGui.projectChanged,
         projectTitle: state.scratchGui.projectTitle,
         sessionExists: state.session && typeof state.session.session !== 'undefined',
-        username: user ? user.username : null
+        username: user ? user.username : null,
+        isShowingWithId: getIsShowingWithId(loadingState),
+        isShowingWithoutId: getIsShowingWithoutId(loadingState),
     };
 };
 
@@ -566,7 +571,9 @@ const mapDispatchToProps = dispatch => ({
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),
     onClickSaveAsCopy: () => dispatch(saveProjectAsCopy()),
-    onSeeCommunity: () => dispatch(setPlayer(true))
+    onSeeCommunity: () => dispatch(setPlayer(true)),
+    onUpdateProject: () => dispatch(manualUpdateProject()),
+    onCreateProject: () => dispatch(createProject()),
 });
 
 export default injectIntl(connect(
