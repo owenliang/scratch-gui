@@ -221,8 +221,30 @@ const ProjectSaverHOC = function (WrappedComponent) {
                     )
                 )
             ).then(() => {
+                // 截图
+                return new Promise((resolve, reject) => {
+                    try {
+                        this.props.vm.postIOData('video', {forceTransparentPreview: true});
+                        this.props.vm.renderer.requestSnapshot(dataURI => {
+                            this.props.vm.postIOData('video', {forceTransparentPreview: false});
+                            // 继续上传
+                            resolve(dataURI);
+                        });
+                        this.props.vm.renderer.draw();
+                    } catch (e) {
+                        log.error('Project thumbnail save error', e);
+                        reject(e);
+                        // This is intentionally fire/forget because a failure
+                        // to save the thumbnail is not vitally important to the user.
+                    }
+                })
+            }).then((dataURI) => {
                 const opts = {
-                    body: savedVMState,
+                    body: JSON.stringify({
+                        code: savedVMState,
+                        thumbnail: dataURI,
+                        projectId:  projectId,
+                    }),
                     // If we set json:true then the body is double-stringified, so don't
                     headers: {
                         'Content-Type': 'application/json'
@@ -232,17 +254,12 @@ const ProjectSaverHOC = function (WrappedComponent) {
                 const creatingProject = projectId === null || typeof projectId === 'undefined';
                 let qs = queryString.stringify(requestParams);
                 if (qs) qs = `?${qs}`;
-                if (creatingProject) {
-                    Object.assign(opts, {
-                        method: 'post',
-                        url: `${storage.projectHost}/${qs}`
-                    });
-                } else {
-                    Object.assign(opts, {
-                        method: 'put',
-                        url: `${storage.projectHost}/${projectId}${qs}`
-                    });
-                }
+
+                Object.assign(opts, {
+                    method: 'post',
+                    url: `/api/project/v1/upload${qs}`
+                });
+
                 return new Promise((resolve, reject) => {
                     xhr(opts, (err, response) => {
                         if (err) return reject(err);
