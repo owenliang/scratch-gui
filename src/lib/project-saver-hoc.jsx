@@ -293,7 +293,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
             })
                 .then(response => {
                     // 弹窗
-                    message.info('上传成功', 1000);
+                    message.info('上传成功', 1);
                     this.props.onSetProjectUnchanged();
                     const id = response.id.toString();
                     if (id && this.props.onUpdateProjectThumbnail) {
