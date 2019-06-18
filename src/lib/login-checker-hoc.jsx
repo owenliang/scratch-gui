@@ -2,7 +2,8 @@ import React from 'react';
 import xhr from 'xhr';
 import PropTypes from 'prop-types';
 import connect from 'react-redux/es/connect/connect';
-import {setUserinfo} from '../reducers/login-checker';
+import {setUserinfo, closeLoginForm} from '../reducers/login-checker';
+import LoginForm from '../components/login/login.jsx';
 
 // 强制校验登录的HOC
 const LoginCheckerHOC = function (WrappedComponent) {
@@ -35,28 +36,43 @@ const LoginCheckerHOC = function (WrappedComponent) {
         }
 
         render() {
-            const {onUpdateUserInfo, userinfo, ...otherProps} = this.props;
+            const {onUpdateUserInfo, onCloseLoginForm, userinfo, openForm, ...otherProps} = this.props;
 
-            return (<WrappedComponent {...otherProps}/>);
+            return (
+                <React.Fragment>
+                    <LoginForm openForm={openForm} onCloseLoginForm={onCloseLoginForm} onUpdateUserInfo={onUpdateUserInfo}></LoginForm>
+                    <WrappedComponent {...otherProps}/>
+                </React.Fragment>
+            );
         }
     }
 
     LoginCheckerWrapper.propTypes = {
         onUpdateUserInfo: PropTypes.func,
         userinfo: PropTypes.object,
+        openForm: PropTypes.bool,
+        onCloseLoginForm: PropTypes.func,
     };
 
     LoginCheckerWrapper.defaultProps = {
 
     };
 
-    const mapStateToProps = state => ({
-        userinfo: state.scratchGui.loginChecker,
-    });
+    const mapStateToProps = state => {
+        let loginChecker = state.scratchGui.loginChecker;
+
+        return {
+            userinfo: loginChecker.userinfo,
+            openForm: loginChecker.openForm,
+        };
+    }
 
     const mapDispatchToProps = dispatch => ({
         onUpdateUserInfo: (userinfo) => {
             dispatch(setUserinfo(userinfo));
+        },
+        onCloseLoginForm: () => {
+            dispatch(closeLoginForm());
         }
     });
 

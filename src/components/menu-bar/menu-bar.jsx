@@ -29,6 +29,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import { Input } from 'antd';
+import {openLoginForm} from '../../reducers/login-checker';
 
 import {
     autoUpdateProject,
@@ -72,8 +73,6 @@ import scratchLogo from './scratch-logo.svg';
 import logo123 from './logo123.png';
 
 import sharedMessages from '../../lib/shared-messages';
-
-import LoginForm from '../login/login-form.jsx';
 
 const ariaMessages = defineMessages({
     language: {
@@ -159,6 +158,7 @@ class MenuBar extends React.Component {
             'restoreOptionMessage',
             'onSaveProject',
             'handleTitleChanged',
+            'handleClickMyLogin',
         ]);
     }
     componentDidMount () {
@@ -247,12 +247,24 @@ class MenuBar extends React.Component {
         this.props.onUpdateProjectTitle(event.target.value);
     }
     onSaveProject() {
+        // 登录校验
+        if (!this.props.userinfo['username']) {
+            this.props.onClickMyLogin();
+            return;
+        }
+
         if (this.props.isShowingWithId) {
             this.props.onUpdateProject()
         } else {
             this.props.onCreateProject()
         }
     }
+    // 登录按钮
+    handleClickMyLogin(event) {
+        console.log(event);
+        this.props.onClickMyLogin();
+    }
+
     restoreOptionMessage (deletedItem) {
         switch (deletedItem) {
         case 'Sprite':
@@ -480,12 +492,11 @@ class MenuBar extends React.Component {
                     </div>
                 </div>
                 <div className={styles.accountInfoGroup}>
-                    <div className={classNames(styles.menuBarItem, styles.hoverable)} >
-                        登录
-                    </div>
-                </div>
-                <div id={styles.loginContainer}>
-                    <LoginForm></LoginForm>
+                    {
+                        this.props.userinfo['username'] ?
+                            <div className={classNames(styles.menuBarItem, styles.hoverable)}>{this.props.userinfo['last_name']}</div>  :
+                            <div className={classNames(styles.menuBarItem, styles.hoverable)} onClick={this.handleClickMyLogin}>登录</div>
+                    }
                 </div>
             </Box>
         );
@@ -556,6 +567,8 @@ MenuBar.defaultProps = {
 const mapStateToProps = state => {
     const loadingState = state.scratchGui.projectState.loadingState;
     const user = state.session && state.session.session && state.session.session.user;
+    const loginChecker = state.scratchGui.loginChecker;
+
     return {
         accountMenuOpen: accountMenuOpen(state),
         fileMenuOpen: fileMenuOpen(state),
@@ -571,6 +584,7 @@ const mapStateToProps = state => {
         username: user ? user.username : null,
         isShowingWithId: getIsShowingWithId(loadingState),
         isShowingWithoutId: getIsShowingWithoutId(loadingState),
+        userinfo: loginChecker.userinfo,
     };
 };
 
@@ -594,6 +608,7 @@ const mapDispatchToProps = dispatch => ({
     onSeeCommunity: () => dispatch(setPlayer(true)),
     onUpdateProject: () => dispatch(manualUpdateProject()),
     onCreateProject: () => dispatch(createProject()),
+    onClickMyLogin: () => dispatch(openLoginForm()),
 });
 
 export default injectIntl(connect(
