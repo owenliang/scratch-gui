@@ -6,10 +6,11 @@ import logo123 from '../../../components/menu-bar/logo123.png';
 import { Table, Divider, Tag, Button } from 'antd';
 import xhr from 'xhr';
 import queryString from 'query-string';
-import ProviderHOC from '../../base/ProviderHOC';
+import ProviderHoc from '../../base/provider-hoc';
 import {loadProjectListDone} from '../../reducers/my';
 import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
+import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
 
 const { Header, Content, Footer } = Layout;
 
@@ -97,6 +98,7 @@ class My extends React.Component {
             <Layout>
                 <Header className={styles.header}>
                     <img className={styles.logo} src={logo123} />
+                    <div className={styles.account}>{this.props.userinfo['username'] ? this.props.userinfo['last_name'] : ''}</div>
                 </Header>
                 <Content className={styles.content} >
                     <div className={styles['inner-content']}>
@@ -122,6 +124,7 @@ const mapStateToProps = state => {
         size: state.my.size,
         total: state.my.total,
         projects: state.my.projects,
+        userinfo: state.loginChecker.userinfo,
     };
 }
 
@@ -136,7 +139,8 @@ let connectedMy = connect(
 
 // 挂载各种HOC
 const WrappedMy = compose(
-    ProviderHOC
+    ProviderHoc,
+    WebLoginCheckerHOC,
 )(connectedMy);
 
 let container = document.createElement('div');

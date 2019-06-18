@@ -35,3 +35,8 @@
 .toolbar {
     margin-bottom: 20px;
 }
+
+.account {
+    float: right;
+    color: white;
+}

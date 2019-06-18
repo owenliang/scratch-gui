@@ -2,9 +2,10 @@ import React from 'react';
 import {combineReducers, createStore} from 'redux';
 import {Provider} from 'react-redux';
 import myReducer from '../reducers/my';
+import loginCheckerReducer from '../reducers/login-checker'
 
 // 提供Redux状态
-const ProviderHOC = function (WrappedComponent) {
+const ProviderHoc = function (WrappedComponent) {
     class ProviderWrapper extends React.Component {
         constructor (props) {
             super(props);
@@ -12,6 +13,7 @@ const ProviderHOC = function (WrappedComponent) {
             // 所有的reducer
             let reducers = {
                 'my': myReducer,
+                'loginChecker': loginCheckerReducer,
             }
             let reducer = combineReducers(reducers);
 
@@ -33,4 +35,4 @@ const ProviderHOC = function (WrappedComponent) {
 }
 
 
-export default ProviderHOC;
+export default ProviderHoc;
