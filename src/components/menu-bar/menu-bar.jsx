@@ -29,7 +29,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import { Input } from 'antd';
-import {openLoginForm} from '../../reducers/login-checker';
+import {openLoginForm, openAccountMenu as openMyAccountMenu, closeAccountForm as closeMyAccountMenu, startLogout} from '../../reducers/login-checker';
 
 import {
     autoUpdateProject,
@@ -42,9 +42,6 @@ import {
     saveProjectAsCopy, getIsShowingWithId, getIsShowingWithoutId
 } from '../../reducers/project-state';
 import {
-    openAccountMenu,
-    closeAccountMenu,
-    accountMenuOpen,
     openFileMenu,
     closeFileMenu,
     fileMenuOpen,
@@ -54,9 +51,6 @@ import {
     openLanguageMenu,
     closeLanguageMenu,
     languageMenuOpen,
-    openLoginMenu,
-    closeLoginMenu,
-    loginMenuOpen
 } from '../../reducers/menus';
 
 import styles from './menu-bar.css';
@@ -158,7 +152,6 @@ class MenuBar extends React.Component {
             'restoreOptionMessage',
             'onSaveProject',
             'handleTitleChanged',
-            'handleClickMyLogin',
         ]);
     }
     componentDidMount () {
@@ -258,11 +251,6 @@ class MenuBar extends React.Component {
         } else {
             this.props.onCreateProject()
         }
-    }
-    // 登录按钮
-    handleClickMyLogin(event) {
-        console.log(event);
-        this.props.onClickMyLogin();
     }
 
     restoreOptionMessage (deletedItem) {
@@ -493,9 +481,42 @@ class MenuBar extends React.Component {
                 </div>
                 <div className={styles.accountInfoGroup}>
                     {
+                        // 已登录
                         this.props.userinfo['username'] ?
-                            <div className={classNames(styles.menuBarItem, styles.hoverable)}>{this.props.userinfo['last_name']}</div>  :
-                            <div className={classNames(styles.menuBarItem, styles.hoverable)} onClick={this.handleClickMyLogin}>登录</div>
+                            (<div
+                                className={classNames(styles.menuBarItem, styles.hoverable)}
+                                onMouseUp={this.props.onClickLogin}
+                            >
+                                {this.props.userinfo['last_name']}
+                                <MenuBarMenu
+                                    className={classNames(styles.menuBarMenu)}
+                                    open={this.props.accountMenuOpen}
+                                    place={'left'}
+                                    onRequestClose={this.props.onRequestCloseLogin}
+                                >
+                                    <MenuSection>
+                                        <MenuItem
+                                            isRtl={this.props.isRtl}
+                                            onClick={() => {this.props.onLogout(); this.props.onRequestCloseLogin(); }}
+                                        >
+                                            注销
+                                        </MenuItem>
+                                    </MenuSection>
+                                    <MenuSection>
+                                        <MenuItem
+                                            isRtl={this.props.isRtl}
+                                            onClick={() => {
+                                                window.open('/my.html', '_blank');
+                                                this.props.onRequestCloseLogin();;
+                                            }}
+                                        >
+                                            我的主页
+                                        </MenuItem>
+                                    </MenuSection>
+                                </MenuBarMenu>
+                            </div>) :
+                            // 未登录
+                            (<div className={classNames(styles.menuBarItem, styles.hoverable)} onClick={this.props.onClickMyLogin}>登录</div>)
                     }
                 </div>
             </Box>
@@ -504,7 +525,6 @@ class MenuBar extends React.Component {
 }
 
 MenuBar.propTypes = {
-    accountMenuOpen: PropTypes.bool,
     authorId: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     authorThumbnailUrl: PropTypes.string,
     authorUsername: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
@@ -525,12 +545,9 @@ MenuBar.propTypes = {
     isShowingProject: PropTypes.bool,
     isUpdating: PropTypes.bool,
     languageMenuOpen: PropTypes.bool,
-    loginMenuOpen: PropTypes.bool,
-    onClickAccount: PropTypes.func,
     onClickEdit: PropTypes.func,
     onClickFile: PropTypes.func,
     onClickLanguage: PropTypes.func,
-    onClickLogin: PropTypes.func,
     onClickLogo: PropTypes.func,
     onClickNew: PropTypes.func,
     onClickRemix: PropTypes.func,
@@ -539,11 +556,9 @@ MenuBar.propTypes = {
     onLogOut: PropTypes.func,
     onOpenRegistration: PropTypes.func,
     onOpenTipLibrary: PropTypes.func,
-    onRequestCloseAccount: PropTypes.func,
     onRequestCloseEdit: PropTypes.func,
     onRequestCloseFile: PropTypes.func,
     onRequestCloseLanguage: PropTypes.func,
-    onRequestCloseLogin: PropTypes.func,
     onSeeCommunity: PropTypes.func,
     onShare: PropTypes.func,
     onToggleLoginOpen: PropTypes.func,
@@ -570,14 +585,12 @@ const mapStateToProps = state => {
     const loginChecker = state.scratchGui.loginChecker;
 
     return {
-        accountMenuOpen: accountMenuOpen(state),
         fileMenuOpen: fileMenuOpen(state),
         editMenuOpen: editMenuOpen(state),
         isRtl: state.locales.isRtl,
         isUpdating: getIsUpdating(loadingState),
         isShowingProject: getIsShowingProject(loadingState),
         languageMenuOpen: languageMenuOpen(state),
-        loginMenuOpen: loginMenuOpen(state),
         projectChanged: state.scratchGui.projectChanged,
         projectTitle: state.scratchGui.projectTitle,
         sessionExists: state.session && typeof state.session.session !== 'undefined',
@@ -585,22 +598,19 @@ const mapStateToProps = state => {
         isShowingWithId: getIsShowingWithId(loadingState),
         isShowingWithoutId: getIsShowingWithoutId(loadingState),
         userinfo: loginChecker.userinfo,
+        accountMenuOpen: loginChecker.openAccountMenu,
     };
 };
 
 const mapDispatchToProps = dispatch => ({
     autoUpdateProject: () => dispatch(autoUpdateProject()),
     onOpenTipLibrary: () => dispatch(openTipsLibrary()),
-    onClickAccount: () => dispatch(openAccountMenu()),
-    onRequestCloseAccount: () => dispatch(closeAccountMenu()),
     onClickFile: () => dispatch(openFileMenu()),
     onRequestCloseFile: () => dispatch(closeFileMenu()),
     onClickEdit: () => dispatch(openEditMenu()),
     onRequestCloseEdit: () => dispatch(closeEditMenu()),
     onClickLanguage: () => dispatch(openLanguageMenu()),
     onRequestCloseLanguage: () => dispatch(closeLanguageMenu()),
-    onClickLogin: () => dispatch(openLoginMenu()),
-    onRequestCloseLogin: () => dispatch(closeLoginMenu()),
     onClickNew: needSave => dispatch(requestNewProject(needSave)),
     onClickRemix: () => dispatch(remixProject()),
     onClickSave: () => dispatch(manualUpdateProject()),
@@ -609,6 +619,9 @@ const mapDispatchToProps = dispatch => ({
     onUpdateProject: () => dispatch(manualUpdateProject()),
     onCreateProject: () => dispatch(createProject()),
     onClickMyLogin: () => dispatch(openLoginForm()),
+    onClickLogin: () => dispatch(openMyAccountMenu()),
+    onRequestCloseLogin: () => dispatch(closeMyAccountMenu()),
+    onLogout: () => dispatch(startLogout()),
 });
 
 export default injectIntl(connect(

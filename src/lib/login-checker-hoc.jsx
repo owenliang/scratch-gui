@@ -2,7 +2,7 @@ import React from 'react';
 import xhr from 'xhr';
 import PropTypes from 'prop-types';
 import connect from 'react-redux/es/connect/connect';
-import {setUserinfo, closeLoginForm} from '../reducers/login-checker';
+import {setUserinfo, closeLoginForm, endLogout} from '../reducers/login-checker';
 import LoginForm from '../components/login/login.jsx';
 
 // 强制校验登录的HOC
@@ -13,8 +13,6 @@ const LoginCheckerHOC = function (WrappedComponent) {
         }
 
         componentDidMount() {
-            console.log('LoginCheckerWrapper');
-
             // 请求用户登录状态
             const opts = {
                 method: 'get',
@@ -35,8 +33,43 @@ const LoginCheckerHOC = function (WrappedComponent) {
             });
         }
 
+        componentDidUpdate(prevProps) {
+            let me = this;
+
+            // 触发了登出
+            if (!prevProps.waitingLogout && this.props.waitingLogout) {
+                const opts = {
+                    method: 'get',
+                    url: `/api/user/v1/logout`,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                };
+                xhr(opts, (err, response) => {
+                    // 注销本地cookie
+                    me.delete_cookie('kids123code_sess');
+                    // 清除登出状态
+                    me.props.endLogout();
+                    // 清除会话状态
+                    me.props.onUpdateUserInfo({});
+                });
+            }
+        }
+
+        delete_cookie( name ) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        }
+
         render() {
-            const {onUpdateUserInfo, onCloseLoginForm, userinfo, openForm, ...otherProps} = this.props;
+            const {
+                onUpdateUserInfo,
+                onCloseLoginForm,
+                userinfo,
+                openForm,
+                endLogout,
+                waitingLogout,
+                ...otherProps
+            } = this.props;
 
             return (
                 <React.Fragment>
@@ -52,6 +85,8 @@ const LoginCheckerHOC = function (WrappedComponent) {
         userinfo: PropTypes.object,
         openForm: PropTypes.bool,
         onCloseLoginForm: PropTypes.func,
+        waitingLogout: PropTypes.bool,
+        endLogout: PropTypes.func,
     };
 
     LoginCheckerWrapper.defaultProps = {
@@ -64,16 +99,14 @@ const LoginCheckerHOC = function (WrappedComponent) {
         return {
             userinfo: loginChecker.userinfo,
             openForm: loginChecker.openForm,
+            waitingLogout: loginChecker.waitingLogout,
         };
     }
 
     const mapDispatchToProps = dispatch => ({
-        onUpdateUserInfo: (userinfo) => {
-            dispatch(setUserinfo(userinfo));
-        },
-        onCloseLoginForm: () => {
-            dispatch(closeLoginForm());
-        }
+        onUpdateUserInfo: (userinfo) => dispatch(setUserinfo(userinfo)),
+        onCloseLoginForm: () => dispatch(closeLoginForm()),
+        endLogout: () => dispatch(endLogout()),
     });
 
     return connect(

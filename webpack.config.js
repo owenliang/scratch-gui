@@ -125,7 +125,6 @@ module.exports = [
             'blocksonly': './src/playground/blocks-only.jsx',
             'compatibilitytesting': './src/playground/compatibility-testing.jsx',
             'player': './src/playground/player.jsx',
-            'login': './src/web/login/login.jsx',
             'my_homepage': './src/web/my_homepage/my_homepage.jsx',
         },
         output: {
@@ -187,15 +186,9 @@ module.exports = [
                 title: 'Scratch 3.0 GUI: Player Example'
             }),
             new HtmlWebpackPlugin({
-                chunks: ['lib.min', 'login'],
-                template: 'src/web/tpl.ejs',
-                filename: 'login.html',
-                title: '登录'
-            }),
-            new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'my_homepage'],
                 template: 'src/web/tpl.ejs',
-                filename: 'my_homepage.html',
+                filename: 'my.html',
                 title: '我的主页'
             }),
             new CopyWebpackPlugin([{
