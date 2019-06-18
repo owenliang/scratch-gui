@@ -235,9 +235,8 @@ class MenuBar extends React.Component {
             this.props.onClickLanguage(e);
         }
     }
-    handleTitleChanged(event) {
-        console.log(event.target.value);
-        this.props.onUpdateProjectTitle(event.target.value);
+    handleTitleChanged(newTitle) {
+        this.props.onUpdateProjectTitle(newTitle);
     }
     onSaveProject() {
         // 登录校验

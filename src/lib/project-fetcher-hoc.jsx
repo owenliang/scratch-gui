@@ -137,7 +137,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             return (
                 <WrappedComponent
                     fetchingProject={isFetchingWithIdProp}
-                    {...componentProps}
+                    {...componentProps} onUpdateProjectTitle={onUpdateProjectTitle}
                 />
             );
         }

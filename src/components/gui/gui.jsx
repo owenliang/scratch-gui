@@ -420,7 +420,7 @@ GUIComponent.defaultProps = {
     isCreating: false,
     isShared: false,
     loading: false,
-    onUpdateProjectTitle: () => {},
+    onUpdateProjectTitle: () => {console.log('here')},
     showComingSoon: false,
     stageSizeMode: STAGE_SIZE_MODES.large
 };
