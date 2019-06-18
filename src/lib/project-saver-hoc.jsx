@@ -275,7 +275,16 @@ const ProjectSaverHOC = function (WrappedComponent) {
 
                 return new Promise((resolve, reject) => {
                     xhr(opts, (err, response) => {
-                        if (err) return reject(err);
+                        if (err) {
+                            return reject(err);
+                        }
+
+                        if (response.statusCode == 403) {
+                            return reject(new Error('别人的作品你只能看看哦~'));
+                        } else if (response.statusCode != 200) {
+                            return reject(new Error('网络开小差了, 再试试~'));
+                        }
+
                         let body;
                         try {
                             // Since we didn't set json: true, we have to parse manually
@@ -302,8 +311,10 @@ const ProjectSaverHOC = function (WrappedComponent) {
                     return response;
                 })
                 .catch(err => {
+                    // 弹窗
+                    message.error(err.message, 1);
                     log.error(err);
-                    throw err; // pass the error up the chain
+                    // throw err; // pass the error up the chain
                 });
         }
 
