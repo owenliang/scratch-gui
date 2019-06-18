@@ -1,0 +1,37 @@
+.logo {
+    display: block;
+    width: 127px;
+    margin-top: 5px;
+    height: 40px;
+    float: left;
+}
+
+.header {
+    background-color: #1890ff;
+    height: 50px;
+    line-height: 50px;
+}
+
+.content {
+    padding: 0 50px;
+}
+
+.inner-content {
+    background: #fff;
+    padding: 24px;
+    min-height: 1024px;
+}
+
+.footer {
+    text-align: center;
+}
+
+.thumbnail {
+    display: inline-block;
+    height: 100px;
+    width: 140px;
+}
+
+.toolbar {
+    margin-bottom: 10px;
+}
