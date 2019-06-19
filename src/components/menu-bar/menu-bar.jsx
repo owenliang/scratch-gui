@@ -486,7 +486,7 @@ class MenuBar extends React.Component {
                                 className={classNames(styles.menuBarItem, styles.hoverable)}
                                 onMouseUp={this.props.onClickLogin}
                             >
-                                {this.props.userinfo['last_name']}
+                                {this.props.userinfo['last_name'] + this.props.userinfo['first_name']}
                                 <MenuBarMenu
                                     className={classNames(styles.menuBarMenu)}
                                     open={this.props.accountMenuOpen}

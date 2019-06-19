@@ -98,7 +98,7 @@ class My extends React.Component {
             <Layout>
                 <Header className={styles.header}>
                     <img className={styles.logo} src={logo123} />
-                    <div className={styles.account}>{this.props.userinfo['username'] ? this.props.userinfo['last_name'] : ''}</div>
+                    <div className={styles.account}>{this.props.userinfo['username'] ? this.props.userinfo['last_name'] + this.props.userinfo['first_name'] : ''}</div>
                 </Header>
                 <Content className={styles.content} >
                     <div className={styles['inner-content']}>
