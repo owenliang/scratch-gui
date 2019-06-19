@@ -12,6 +12,10 @@ var autoprefixer = require('autoprefixer');
 var postcssVars = require('postcss-simple-vars');
 var postcssImport = require('postcss-import');
 
+// OSS
+const WebpackAliOSSPlugin = require('webpack-oss');
+var now = Date.now();
+
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: 'cheap-module-source-map',
@@ -27,7 +31,7 @@ const base = {
     },
     output: {
         library: 'GUI',
-        filename: '[name].[chunkhash].js'
+        filename: '[name].[chunkhash].js',
     },
     externals: {
         React: 'react',
@@ -125,11 +129,12 @@ module.exports = [
             'blocksonly': './src/playground/blocks-only.jsx',
             'compatibilitytesting': './src/playground/compatibility-testing.jsx',
             'player': './src/playground/player.jsx',
-            'my': './src/web/pages/my/my.jsx',
+            'my': './src/web/pages/my/my.jsx'
         },
         output: {
             path: path.resolve(__dirname, 'build'),
-            filename: '[name].js'
+            filename: '[name].js',
+            publicPath: process.env.NODE_ENV === 'production' ? '//assets.scratch.kids123code.com/' + now + '/' : '/'
         },
         externals: {
             React: 'react',
@@ -208,7 +213,19 @@ module.exports = [
                 from: 'extension-worker.{js,js.map}',
                 context: 'node_modules/scratch-vm/dist/web'
             }])
-        ])
+        ].concat(
+            process.env.NODE_ENV === 'production' ? [
+                new WebpackAliOSSPlugin({
+                    accessKeyId: 'LTAIPM8Vp5yZ6d6y',
+                    accessKeySecret: 'rpYZQReTmkqGfapx5J2uugu91yf1oG',
+                    region: 'oss-cn-qingdao',
+                    bucket: 'assets-scratch',
+                    exclude: [/.*\.html$/],
+                    deleteAll: false,
+                    format: now,
+                })
+            ] : []
+        ))
     })
 ].concat(
     process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist' ? (
@@ -220,7 +237,7 @@ module.exports = [
             },
             output: {
                 libraryTarget: 'umd',
-                path: path.resolve('dist')
+                path: path.resolve('dist'),
             },
             externals: {
                 React: 'react',
@@ -250,3 +267,5 @@ module.exports = [
             ])
         })) : []
 );
+
+console.log(module.exports);
