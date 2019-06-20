@@ -128,7 +128,7 @@ module.exports = [
             'gui': './src/playground/index.jsx',
             'blocksonly': './src/playground/blocks-only.jsx',
             'compatibilitytesting': './src/playground/compatibility-testing.jsx',
-            'player': './src/playground/player.jsx',
+            'player': './src/playground/h5/h5.jsx',
             'my': './src/web/pages/my/my.jsx'
         },
         output: {
@@ -187,7 +187,7 @@ module.exports = [
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'player'],
                 template: 'src/playground/index.ejs',
-                filename: 'player.html',
+                filename: 'h5.html',
                 title: '123少儿编程|作品展示'
             }),
             new HtmlWebpackPlugin({

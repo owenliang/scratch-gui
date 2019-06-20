@@ -1,0 +1,61 @@
+.h5-container{
+    background-color: #f4f4f4;
+}
+.header {
+    background-color: #1890ff;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 50px;
+    position: relative;
+}
+
+.logo {
+    display: block;
+    width: 127px;
+    height: 40px;
+    position: absolute;
+    left: 50%;
+    top: 5px;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 30px 20px;
+}
+
+.footer > div {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.qrcode {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+}
+
+.project-info {
+    text-align: center;
+    padding: 40px 0 10px 0;
+}
+
+.project-info > div {
+    margin-bottom: 10px;
+}
+
+.project-title {
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 900;
+}
+
+.project-author {
+    font-size: 14px;
+    line-height: 30px;
+    margin-left: 5px;
+}
