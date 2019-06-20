@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import styles from './my.css';
 import { Layout, Menu, Breadcrumb } from 'antd';
 import logo123 from '../../../components/menu-bar/logo123.png';
-import { Table, Divider, Tag, Button } from 'antd';
+import { Table, Divider, Tag, Button, message } from 'antd';
 import xhr from 'xhr';
 import queryString from 'query-string';
 import ProviderHoc from '../../base/provider-hoc';
-import {loadProjectListDone} from '../../reducers/my';
+import {loadProjectListDone, delProject} from '../../reducers/my';
 import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
@@ -51,11 +51,38 @@ class My extends React.Component {
                     <span>
                         <a href="javascript:void(0);" onClick={() => {window.location=`/#${record['id']}`;}}>继续创作</a>
                         <Divider type="vertical" />
-                        <a href="javascript:void(0)">运行程序</a>
+                        <a href="javascript:void(0)">分享微信</a>
+                        <Divider type="vertical" />
+                         <a href="javascript:void(0)" onClick={() => this.handleDelProject(record['id'])}>删除作品</a>
                     </span>
                 )
             }
         ];
+    }
+
+    handleDelProject(proj_id) {
+        if (!confirm('确认要删除吗')) {
+            return;
+        }
+
+        let params = {proj_id: proj_id}
+
+        var formData = new FormData();
+        formData.append('proj_id', proj_id);
+
+        const opts = {
+            method: 'post',
+            url: `/api/project/v1/del_project`,
+            body: formData,
+        };
+        xhr(opts, (err, response) => {
+            // 需要重新从当前列表中删掉这个项目
+            if (response.statusCode == 200) {
+                this.props.delProject(proj_id);
+            } else {
+                message.error('网络异常', 1);
+            }
+        });
     }
 
     componentDidUpdate() {
@@ -130,6 +157,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
     loadProjectListDone: (page, size, total, projects) => dispatch(loadProjectListDone(page, size, total, projects)),
+    delProject: (proj_id) => dispatch(delProject(proj_id)),
 });
 
 let connectedMy = connect(
