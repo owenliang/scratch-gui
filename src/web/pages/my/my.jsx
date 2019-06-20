@@ -51,7 +51,7 @@ class My extends React.Component {
                     <span>
                         <a href="javascript:void(0);" onClick={() => {window.location=`/#${record['id']}`;}}>继续创作</a>
                         <Divider type="vertical" />
-                        <a href="javascript:void(0)">分享微信</a>
+                        <a href={`/player.html#${record['id']}`}>分享微信</a>
                         <Divider type="vertical" />
                          <a href="javascript:void(0)" onClick={() => this.handleDelProject(record['id'])}>删除作品</a>
                     </span>
