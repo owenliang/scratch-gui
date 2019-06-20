@@ -206,7 +206,7 @@ const WrappedGui = compose(
     ProjectSaverHOC,
     vmListenerHOC,
     vmManagerHOC,
-    cloudManagerHOC
+    // cloudManagerHOC
 )(ConnectedGUI);
 
 WrappedGui.setAppElement = ReactModal.setAppElement;

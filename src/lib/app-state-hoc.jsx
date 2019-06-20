@@ -100,6 +100,7 @@ const AppStateHOC = function (WrappedComponent, localesOnly) {
                 showTelemetryModal, // eslint-disable-line no-unused-vars
                 ...componentProps
             } = this.props;
+
             return (
                 <Provider store={this.store}>
                     <ConnectedIntlProvider>

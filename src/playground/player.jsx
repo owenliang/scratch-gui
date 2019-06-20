@@ -10,8 +10,8 @@ import GUI from '../containers/gui.jsx';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import AppStateHOC from '../lib/app-state-hoc.jsx';
 import TitledHOC from '../lib/titled-hoc.jsx';
-
-import {setPlayer} from '../reducers/mode';
+import {setStageSize} from '../reducers/stage-size';
+import {STAGE_SIZE_MODES} from '../lib/layout-constants';
 
 if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
     // Warn before navigating away
@@ -20,29 +20,41 @@ if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
 
 import styles from './player.css';
 
-const Player = ({isPlayerOnly, onSeeInside, projectId}) => (
-    <Box className={classNames(isPlayerOnly ? styles.stageOnly : styles.editor)}>
-        {isPlayerOnly && <button onClick={onSeeInside}>{'See inside'}</button>}
-        <GUI
-            enableCommunity
-            isPlayerOnly={isPlayerOnly}
-            projectId={projectId}
-        />
-    </Box>
-);
+class Player extends React.Component {
+    componentDidMount() {
+        this.props.setStageSize();
+    }
+    render() {
+        let width;
+        if (window.innerWidth > 640) {
+            width= 640;
+        }else {
+            width = window.innerWidth;
+        }
+        let height = 360 * width / 480;
+
+        width -= 10;
+
+        return (
+        <div className={styles.stageOnly} style={{width: width + 'px'}}>
+            <GUI
+                projectId={this.props.projectId}
+            />
+        </div>
+        );
+    }
+}
 
 Player.propTypes = {
-    isPlayerOnly: PropTypes.bool,
-    onSeeInside: PropTypes.func,
     projectId: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-    isPlayerOnly: state.scratchGui.mode.isPlayerOnly
+
 });
 
 const mapDispatchToProps = dispatch => ({
-    onSeeInside: () => dispatch(setPlayer(false))
+    setStageSize: () => dispatch(setStageSize(STAGE_SIZE_MODES.fullWidth))
 });
 
 const ConnectedPlayer = connect(

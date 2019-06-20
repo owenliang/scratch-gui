@@ -13,7 +13,11 @@ const STAGE_SIZE_MODES = keyMirror({
     /**
      * The "small stage" button is pressed; the user would like a small stage.
      */
-    small: null
+    small: null,
+
+
+    // 宽屏塞满
+    fullWidth: null,
 });
 
 /**
@@ -34,7 +38,9 @@ const STAGE_DISPLAY_SIZES = keyMirror({
     /**
      * Small stage (ignores browser width)
      */
-    small: null
+    small: null,
+
+    fullWidth: null,
 });
 
 const STAGE_DISPLAY_SCALES = {};

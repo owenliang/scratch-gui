@@ -152,20 +152,6 @@ const StageHeaderComponent = function (props) {
                     <Controls vm={vm} />
                     <div className={styles.stageSizeRow}>
                         {stageControls}
-                        <div>
-                            <Button
-                                className={styles.stageButton}
-                                onClick={onSetStageFull}
-                            >
-                                <img
-                                    alt={props.intl.formatMessage(messages.fullStageSizeMessage)}
-                                    className={styles.stageButtonIcon}
-                                    draggable={false}
-                                    src={fullScreenIcon}
-                                    title={props.intl.formatMessage(messages.fullscreenControl)}
-                                />
-                            </Button>
-                        </div>
                     </div>
                 </Box>
             </Box>

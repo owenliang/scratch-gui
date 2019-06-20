@@ -29,6 +29,11 @@ const resolveStageSize = (stageSizeMode, isFullSize) => {
     if (stageSizeMode === STAGE_SIZE_MODES.small) {
         return STAGE_DISPLAY_SIZES.small;
     }
+
+    if (stageSizeMode == STAGE_SIZE_MODES.fullWidth) {
+        return STAGE_SIZE_MODES.fullWidth;
+    }
+
     if (isFullSize) {
         return STAGE_DISPLAY_SIZES.large;
     }
@@ -63,6 +68,14 @@ const getStageDimensions = (stageSize, isFullScreen) => {
         }
 
         stageDimensions.scale = stageDimensions.width / stageDimensions.widthDefault;
+    } else if (stageSize == STAGE_DISPLAY_SIZES.fullWidth) {    // 特殊场景
+        if (window.innerWidth > 640) {
+            stageDimensions.width= 640;
+        }else {
+            stageDimensions.width = window.innerWidth;
+        }
+        stageDimensions.width -= 10
+        stageDimensions.height = stageDimensions.heightDefault * stageDimensions.width / stageDimensions.widthDefault;
     } else {
         stageDimensions.scale = STAGE_DISPLAY_SCALES[stageSize];
         stageDimensions.height = stageDimensions.scale * stageDimensions.heightDefault;
