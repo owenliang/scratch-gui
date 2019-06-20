@@ -133,7 +133,7 @@ module.exports = [
         },
         output: {
             path: path.resolve(__dirname, 'build'),
-            filename: '[name].js',
+            filename: '[name].[chunkhash].js',
             publicPath: process.env.NODE_ENV === 'production' ? '//assets.scratch.kids123code.com/' + now + '/' : '/'
         },
         externals: {
