@@ -23,7 +23,7 @@ class H5 extends React.Component {
 
     // 拉取微信签名，初始化wx sdk
     fetchSign() {
-        let params = {url: 'https://scratch.kids123code.com/h5.html'};
+        let params = {url: window.location.href.split('#')[0]};
         const opts = {
             method: 'get',
             url: `/api/wx/v1/js_sign?${queryString.stringify(params)}`,
