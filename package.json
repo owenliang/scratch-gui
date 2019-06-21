@@ -143,5 +143,7 @@
       "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "weixin-js-sdk": "^1.4.0-test"
+  }
 }

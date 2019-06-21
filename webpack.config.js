@@ -134,7 +134,7 @@ module.exports = [
         output: {
             path: path.resolve(__dirname, 'build'),
             filename: '[name].[chunkhash].js',
-            publicPath: process.env.NODE_ENV === 'production' ? '//assets.scratch.kids123code.com/' + now + '/' : '/'
+            publicPath: process.env.NODE_ENV === 'production' ? 'https://assets.scratch.kids123code.com/' + now + '/' : '/'
         },
         externals: {
             React: 'react',
