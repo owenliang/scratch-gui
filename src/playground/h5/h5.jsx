@@ -36,7 +36,7 @@ class H5 extends React.Component {
                 let r = JSON.parse(response['body']);
 
                 // 调用微信接口config
-                r['debug'] = false;
+                r['debug'] = true;
                 r['jsApiList'] = ['updateAppMessageShareData', 'updateTimelineShareData'];
                 wx.config(r);
 
@@ -55,12 +55,14 @@ class H5 extends React.Component {
     }
 
     updateWxShareData() {
+        let projectThumbnail =  this.props.projectThumbnail ? `https:${this.props.projectThumbnail}` : 'https://assets.scratch.kids123code.com/wx_share.png';
+
         // 分享给朋友
         wx.updateAppMessageShareData({
-            title: `快来玩${this.props.projectAuthor}的《${this.props.projectTitle}》`, // 分享标题
-            desc: `${this.props.projectAuthor}创作的scratch小游戏，快来玩吧~`, // 分享描述
+            title: `Scratch作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
+            desc: `编程达人${this.props.projectAuthor}创作的scratch小游戏，快来玩吧~`, // 分享描述
             link: window.location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'https://assets.scratch.kids123code.com/wx_share.png', // 分享图标
+            imgUrl: projectThumbnail, // 分享图标
             success: function () {
                 // 设置成功
                 console.log('wx分享给朋友更新完成');
@@ -68,9 +70,9 @@ class H5 extends React.Component {
         })
         // 分享到朋友圈
         wx.updateTimelineShareData({
-            title: `快来玩${this.props.projectAuthor}的《${this.props.projectTitle}》`, // 分享标题
+            title: `Scratch作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
             link: window.location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-            imgUrl: 'https://assets.scratch.kids123code.com/wx_share.png', // 分享图标
+            imgUrl: projectThumbnail, // 分享图标
             success: function () {
                 // 设置成功
                 console.log('wx分享到朋友圈更新完成');
@@ -125,7 +127,8 @@ H5.propTypes = {
 const mapStateToProps = state => {
     return {
         projectTitle: state.scratchGui.projectTitle ? state.scratchGui.projectTitle : '无名作品',
-        projectAuthor: state.scratchGui.h5.author ? state.scratchGui.h5.author : '无名作者',
+        projectAuthor: state.scratchGui.h5.meta.author ? state.scratchGui.h5.meta.author : '无名作者',
+        projectThumbnail:  state.scratchGui.h5.meta.thumbnail ? state.scratchGui.h5.meta.thumbnail : '',
     }
 };
 

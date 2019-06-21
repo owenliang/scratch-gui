@@ -1,26 +1,26 @@
-const SET_PROJECT_AUTHOR = 'h5/SET_PROJECT_AUTHOR';
+const SET_PROJECT_META = 'h5/SET_PROJECT_META';
 
 const initialState = {
-    author: ''
+    meta: {}
 };
 
 const reducer = function (state, action) {
     if (typeof state === 'undefined') state = initialState;
     switch (action.type) {
-    case SET_PROJECT_AUTHOR:
-        return Object.assign({}, state, {author: action.author})
+    case SET_PROJECT_META:
+        return Object.assign({}, state, {meta: action.meta})
     default:
         return state;
     }
 };
 
-const setProjectAuthor = author => ({
-    type: SET_PROJECT_AUTHOR,
-    author: author
+const setProjectMeta = meta => ({
+    type: SET_PROJECT_META,
+    meta: meta
 });
 
 export {
     reducer as default,
     initialState as h5InitialState,
-    setProjectAuthor
+    setProjectMeta
 };

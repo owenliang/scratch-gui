@@ -5,7 +5,7 @@ import bindAll from 'lodash.bindall';
 import {connect} from 'react-redux';
 import xhr from 'xhr';
 
-import {setProjectAuthor} from '../reducers/h5';
+import {setProjectMeta} from '../reducers/h5';
 import {setProjectTitle} from '../reducers/project-title';
 import {setProjectUnchanged} from '../reducers/project-changed';
 import {
@@ -91,7 +91,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
 
                                     let r = JSON.parse(response['body']);
 
-                                    this.props.onUpdateProjectAuthor(r['author']);
+                                    this.props.onUpdateProjectMeta(r);
 
                                     resolve({projectAsset: projectAsset, projectTitle: r['name']});
                                 });
@@ -186,7 +186,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
         setProjectId: projectId => dispatch(setProjectId(projectId)),
         onProjectUnchanged: () => dispatch(setProjectUnchanged()),
         onUpdateProjectTitle: (title) => dispatch(setProjectTitle(title)),
-        onUpdateProjectAuthor: (author) => dispatch(setProjectAuthor(author))
+        onUpdateProjectMeta: (meta) => dispatch(setProjectMeta(meta))
     });
     // Allow incoming props to override redux-provided props. Used to mock in tests.
     const mergeProps = (stateProps, dispatchProps, ownProps) => Object.assign(
