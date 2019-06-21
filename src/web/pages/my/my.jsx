@@ -1,16 +1,17 @@
 import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import styles from './my.css';
-import { Layout, Menu, Breadcrumb } from 'antd';
+import {Layout, Modal} from 'antd';
 import logo123 from '../../../components/menu-bar/logo123.png';
 import { Table, Divider, Tag, Button, message } from 'antd';
 import xhr from 'xhr';
 import queryString from 'query-string';
 import ProviderHoc from '../../base/provider-hoc';
-import {loadProjectListDone, delProject} from '../../reducers/my';
+import {loadProjectListDone, delProject,  openShareModal, closeShareModal,} from '../../reducers/my';
 import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
+import QRCode from 'qrcode';
 
 const { Header, Content, Footer } = Layout;
 
@@ -51,13 +52,23 @@ class My extends React.Component {
                     <span>
                         <a href="javascript:void(0);" onClick={() => {window.location=`/#${record['id']}`;}}>继续创作</a>
                         <Divider type="vertical" />
-                        <a href={`/h5.html#${record['id']}`}>分享微信</a>
+                        <a href="javascript:void(0);" onClick={() => {this.handleClickShare(record['id']);}}>分享微信</a>
                         <Divider type="vertical" />
                          <a href="javascript:void(0)" onClick={() => this.handleDelProject(record['id'])}>删除作品</a>
                     </span>
                 )
             }
         ];
+    }
+
+    handleClickShare(proj_id) {
+        QRCode.toDataURL(`https://scratch.kids123code.com/h5.html#${proj_id}`, (err, url) => {
+            this.props.onOpenShareModal(url);
+        })
+    }
+
+    handleCloseShare() {
+        this.props.onCloseShareModal()
     }
 
     handleDelProject(proj_id) {
@@ -140,6 +151,20 @@ class My extends React.Component {
                     </div>
                 </Content>
                 <Footer className={styles.footer}>青岛市市南区一二三编程培训学校有限责任公司@2019</Footer>
+                <Modal
+                    title="微信扫码"
+                    visible={this.props.shareModalShown}
+                    footer={null}
+                    maskClosable={true}
+                    width={400}
+                    centered={true}
+                    mask={true}
+                    onCancel={this.handleCloseShare.bind(this)}
+                >
+                    {
+                        this.props.shareDataURI ? <img src={this.props.shareDataURI} className={styles.wxQrcode}/> : null
+                    }
+                </Modal>
             </Layout>
         )
     }
@@ -152,12 +177,16 @@ const mapStateToProps = state => {
         total: state.my.total,
         projects: state.my.projects,
         userinfo: state.loginChecker.userinfo,
+        shareModalShown: state.my.shareModalShown,
+        shareDataURI: state.my.shareDataURI,
     };
 }
 
 const mapDispatchToProps = dispatch => ({
     loadProjectListDone: (page, size, total, projects) => dispatch(loadProjectListDone(page, size, total, projects)),
     delProject: (proj_id) => dispatch(delProject(proj_id)),
+    onOpenShareModal: (dataURI) => dispatch(openShareModal(dataURI)),
+    onCloseShareModal: () =>dispatch(closeShareModal()),
 });
 
 let connectedMy = connect(

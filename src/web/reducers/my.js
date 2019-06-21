@@ -1,5 +1,7 @@
 const LOAD_PROJECT_LIST_DONE = 'my/LOAD_PROJECT_LIST_DONE';
 const DEL_PROJECT = 'my/DEL_PROJECT';
+const OPEN_SHARE_MODAL = 'my/OPEN_SHARE_MODAL';
+const CLOSE_SHARE_MODAL = 'my/CLOSE_SHARE_MODAL';
 
 // we are initializing to a blank string instead of an actual title,
 // because it would be hard to localize here
@@ -7,7 +9,9 @@ const initialState = {
     page: 0,
     size: 20,
     total: 0,
-    projects: []
+    projects: [],
+    shareModalShown: false, // 微信二维码modal
+    shareDataURI: '',
 };
 
 const reducer = function (state, action) {
@@ -23,6 +27,10 @@ const reducer = function (state, action) {
             }
         }
         return Object.assign({}, state, {projects: projects});
+    case OPEN_SHARE_MODAL:
+       return Object.assign({}, state, {shareModalShown: true, shareDataURI: action.dataURI})
+    case CLOSE_SHARE_MODAL:
+       return Object.assign({}, state, {shareModalShown: false, shareDataURI: ''})
     default:
         return state;
     }
@@ -41,8 +49,19 @@ const delProject = (proj_id) => ({
     proj_id: proj_id,
 })
 
+const openShareModal = (dataURI) => ({
+    type:  OPEN_SHARE_MODAL,
+    dataURI: dataURI,
+})
+
+const closeShareModal = () => ({
+    type: CLOSE_SHARE_MODAL,
+})
+
 export {
     reducer as default,
     loadProjectListDone,
     delProject,
+    openShareModal,
+    closeShareModal,
 };
