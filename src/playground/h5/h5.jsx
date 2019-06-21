@@ -36,8 +36,8 @@ class H5 extends React.Component {
                 let r = JSON.parse(response['body']);
 
                 // 调用微信接口config
-                r['debug'] = true;
-                r['jsApiList'] = ['updateAppMessageShareData'];
+                // r['debug'] = true;
+                r['jsApiList'] = ['updateAppMessageShareData', 'updateTimelineShareData'];
                 wx.config(r);
 
                 // 成功回调
