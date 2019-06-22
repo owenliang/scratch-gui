@@ -13,6 +13,21 @@ import qrcode from './qrcode.jpg';
 import wx from 'weixin-js-sdk';
 import xhr from 'xhr';
 import queryString from 'query-string';
+import classNames from 'classnames';
+
+// 一坨图片
+import up from './btns/up.png';
+import up_active from './btns/up_active.png';
+import down from './btns/down.png';
+import down_active from './btns/down_active.png';
+import left from './btns/left.png';
+import left_active from './btns/left_active.png';
+import right from './btns/right.png';
+import right_active from './btns/right_active.png';
+import space from './btns/space.png';
+import space_active from './btns/space_active.png';
+
+import {setKeyPressed, setKeyUnPressed} from '../../reducers/h5';
 
 if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
     // Warn before navigating away
@@ -20,6 +35,25 @@ if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
 }
 
 class H5 extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.handleUpStart = this.handleUpStart.bind(this);
+        this.handleUpEnd = this.handleUpEnd.bind(this);
+
+        this.handleDownStart = this.handleDownStart.bind(this);
+        this.handleDownEnd = this.handleDownEnd.bind(this);
+
+        this.handleLeftStart = this.handleLeftStart.bind(this);
+        this.handleLeftEnd =  this.handleLeftEnd.bind(this);
+
+        this.handleRightStart =  this.handleRightStart.bind(this);
+        this.handleRightEnd = this.handleRightEnd.bind(this);
+
+        this.handleSpaceStart = this.handleSpaceStart.bind(this);
+        this.handleSpaceEnd = this.handleSpaceEnd.bind(this);
+    }
 
     // 拉取微信签名，初始化wx sdk
     fetchSign() {
@@ -80,9 +114,20 @@ class H5 extends React.Component {
         })
     }
 
+    adjustWidth() {
+        this.width = window.innerWidth;
+        if (this.width > 640) {
+            this.width = 640;
+        }
+        // 不要填满屏幕宽度
+        this.width -= 5;
+    }
+
     componentDidMount() {
         // 服务端JS签名
         this.fetchSign();
+
+        window.addEventListener('contextmenu', function(e) {e.preventDefault();})
     }
 
     componentDidUpdate(prevProps) {
@@ -92,7 +137,83 @@ class H5 extends React.Component {
         }
     }
 
+    keyboardEvent(key, isDown) {
+        let event = {
+            key: key,
+            isDown: isDown,
+        }
+
+        if (key == 'ArrowUp') {
+            event.keyCode = 38;
+        } else if (key == 'ArrowDown') {
+            event.keyCode = 40;
+        } else if (key == 'ArrowLeft') {
+            event.keyCode = 37;
+        } else if (key == 'ArrowRight') {
+            event.keyCode = 39;
+        } else if (key == ' ') {
+            event.keyCode = 32;
+        }
+        return event;
+    }
+
+    handleKeyDown (ev, key) {
+        let vmEvent = this.keyboardEvent(key, true);
+        this.props.vm.postIOData('keyboard', vmEvent);
+    }
+    handleKeyUp (ev, key) {
+        let vmEvent = this.keyboardEvent(key, false);
+        this.props.vm.postIOData('keyboard', vmEvent);
+    }
+
+    handleUpStart(ev) {
+        this.props.setKeyPressed('ArrowUp');
+        this.handleKeyDown(ev, 'ArrowUp');
+    }
+    handleUpEnd(ev) {
+        this.props.setKeyUnPressed('ArrowUp');
+        this.handleKeyUp(ev, 'ArrowUp');
+    }
+
+    handleDownStart(ev) {
+        this.props.setKeyPressed('ArrowDown');
+        this.handleKeyDown(ev, 'ArrowDown');
+    }
+    handleDownEnd(ev) {
+        this.props.setKeyUnPressed('ArrowDown');
+        this.handleKeyUp(ev, 'ArrowDown');
+    }
+
+    handleLeftStart(ev) {
+        this.props.setKeyPressed('ArrowLeft');
+        this.handleKeyDown(ev, 'ArrowLeft');
+    }
+    handleLeftEnd(ev) {
+        this.props.setKeyUnPressed('ArrowLeft');
+        this.handleKeyUp(ev, 'ArrowLeft');
+    }
+
+    handleRightStart(ev) {
+        this.props.setKeyPressed('ArrowRight');
+        this.handleKeyDown(ev, 'ArrowRight');
+    }
+    handleRightEnd(ev) {
+        this.props.setKeyUnPressed('ArrowRight');
+        this.handleKeyUp(ev, 'ArrowRight');
+    }
+
+    handleSpaceStart(ev) {
+        this.props.setKeyPressed(' ');
+        this.handleKeyDown(ev, ' ');
+    }
+    handleSpaceEnd(ev) {
+        this.props.setKeyUnPressed(' ');
+        this.handleKeyUp(ev, ' ');
+    }
+
     render() {
+        this.adjustWidth()
+
       return (
           <div className={styles.h5Container}>
               <div className={styles.header}>
@@ -107,6 +228,51 @@ class H5 extends React.Component {
                   </div>
               </div>
               <ConnectedPlayer/>
+              <div className={styles.controllerContainer} style={{width: `${this.width}px`}}>
+                  <div className={styles.directionBtnContainer}>
+                      <div
+                          onTouchStart={this.handleUpStart}
+                          onTouchEnd={this.handleUpEnd}
+                          onTouchCancel={this.handleUpEnd}
+                          onMouseDown={this.handleUpStart}
+                          onMouseUp={this.handleUpEnd}
+                          className={classNames(styles.upBtn, styles.directionBtns, {[styles.active]: this.props.up})}
+                      />
+                      <div src={down}
+                           onTouchStart={this.handleDownStart}
+                           onTouchEnd={this.handleDownEnd}
+                           onTouchCancel={this.handleDownEnd}
+                           onMouseDown={this.handleDownStart}
+                           onMouseUp={this.handleDownEnd}
+                           className={classNames(styles.downBtn, styles.directionBtns, {[styles.active]: this.props.down})}
+                      />
+                      <div
+                          onTouchStart={this.handleLeftStart}
+                          onTouchEnd={this.handleLeftEnd}
+                          onTouchCancel={this.handleLeftEnd}
+                          onMouseDown={this.handleLeftStart}
+                          onMouseUp={this.handleLeftEnd}
+                           className={classNames(styles.leftBtn, styles.directionBtns, {[styles.active]: this.props.left})}
+                      />
+                      <div
+                          onTouchStart={this.handleRightStart}
+                          onTouchEnd={this.handleRightEnd}
+                          onTouchCancel={this.handleRightEnd}
+                          onMouseDown={this.handleRightStart}
+                          onMouseUp={this.handleRightEnd}
+                          className={classNames(styles.rightBtn, styles.directionBtns, {[styles.active]: this.props.right})}
+                      />
+                  </div>
+
+                  <div
+                      onTouchStart={this.handleSpaceStart}
+                      onTouchEnd={this.handleSpaceEnd}
+                      onTouchCancel={this.handleSpaceEnd}
+                      onMouseDown={this.handleSpaceStart}
+                      onMouseUp={this.handleSpaceEnd}
+                       className={classNames(styles.spaceBtn, {[styles.active]: this.props.space})}
+                  ></div>
+              </div>
               <div className={styles.footer}>
                   <div>
                       <img src={qrcode} className={styles.qrcode}/>
@@ -129,11 +295,18 @@ const mapStateToProps = state => {
         projectTitle: state.scratchGui.projectTitle ? state.scratchGui.projectTitle : '无名作品',
         projectAuthor: state.scratchGui.h5.meta.author ? state.scratchGui.h5.meta.author : '无名作者',
         projectThumbnail:  state.scratchGui.h5.meta.thumbnail ? state.scratchGui.h5.meta.thumbnail : '',
+        vm: state.scratchGui.vm,
+        up: state.scratchGui.h5.up,
+        down: state.scratchGui.h5.down,
+        left: state.scratchGui.h5.left,
+        right: state.scratchGui.h5.right,
+        space: state.scratchGui.h5.space,
     }
 };
 
 const mapDispatchToProps = dispatch => ({
-
+    setKeyPressed: (key) => dispatch(setKeyPressed(key)),
+    setKeyUnPressed: (key) => dispatch(setKeyUnPressed(key))
 });
 
 const ConnectedH5 = connect(

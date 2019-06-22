@@ -136,6 +136,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 setProjectId: setProjectIdProp,
                 /* eslint-enable no-unused-vars */
                 isFetchingWithId: isFetchingWithIdProp,
+                onUpdateProjectMeta,
                 ...componentProps
             } = this.props;
             return (
@@ -162,6 +163,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
         reduxProjectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         setProjectId: PropTypes.func,
         onUpdateProjectTitle: PropTypes.func,
+        onUpdateProjectMeta: PropTypes.func,
     };
     ProjectFetcherComponent.defaultProps = {
         // assetHost: 'https://assets.scratch.mit.edu',
