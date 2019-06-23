@@ -168,7 +168,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
     ProjectFetcherComponent.defaultProps = {
         // assetHost: 'https://assets.scratch.mit.edu',
         assetHost: 'https://assets.scratch.kids123code.com',
-        projectHost: 'https://projects.scratch.mit.edu',
+        projectHost: 'https://assets.scratch.kids123code.com',
         // projectHost: 'https://projects.scratch.mit.edu'
     };
 

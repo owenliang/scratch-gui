@@ -28,6 +28,7 @@ import space from './btns/space.png';
 import space_active from './btns/space_active.png';
 
 import {setKeyPressed, setKeyUnPressed} from '../../reducers/h5';
+import bindAll from "lodash.bindall";
 
 if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
     // Warn before navigating away
@@ -39,20 +40,18 @@ class H5 extends React.Component {
     constructor(props) {
         super(props);
 
-        this.handleUpStart = this.handleUpStart.bind(this);
-        this.handleUpEnd = this.handleUpEnd.bind(this);
-
-        this.handleDownStart = this.handleDownStart.bind(this);
-        this.handleDownEnd = this.handleDownEnd.bind(this);
-
-        this.handleLeftStart = this.handleLeftStart.bind(this);
-        this.handleLeftEnd =  this.handleLeftEnd.bind(this);
-
-        this.handleRightStart =  this.handleRightStart.bind(this);
-        this.handleRightEnd = this.handleRightEnd.bind(this);
-
-        this.handleSpaceStart = this.handleSpaceStart.bind(this);
-        this.handleSpaceEnd = this.handleSpaceEnd.bind(this);
+        bindAll(this, [
+            'handleUpStart',
+            'handleUpEnd',
+            'handleDownStart',
+            'handleDownEnd',
+            'handleLeftStart',
+            'handleLeftEnd',
+            'handleRightStart',
+            'handleRightEnd',
+            'handleSpaceStart',
+            'handleSpaceEnd',
+        ]);
     }
 
     // 拉取微信签名，初始化wx sdk

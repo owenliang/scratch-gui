@@ -35,9 +35,19 @@ class Storage extends ScratchStorage {
     setProjectHost (projectHost) {
         this.projectHost = projectHost;
     }
+
+    // 根据环境返回项目地址
+    getProjectURL(projectAsset) {
+        let env = 'dev';
+        if (process.env.NODE_ENV == 'production') {
+            env = 'prod';
+        }
+        return `${this.projectHost}/scratch_code/${env}/${projectAsset.assetId}`;
+    }
     getProjectGetConfig (projectAsset) {
+        return this.getProjectURL(projectAsset);
         // return `${this.projectHost}/${projectAsset.assetId}`;
-        return `/api/project/v1/download/${projectAsset.assetId}`;
+        // return `/api/project/v1/download/${projectAsset.assetId}`;
     }
     getProjectCreateConfig () {
         return {
@@ -47,7 +57,7 @@ class Storage extends ScratchStorage {
     }
     getProjectUpdateConfig (projectAsset) {
         return {
-            url: `/api/project/v1/download/${projectAsset.assetId}`,
+            url: this.getProjectURL(),
             withCredentials: true,
         }
         /*

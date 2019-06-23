@@ -222,7 +222,7 @@ module.exports = [
                     bucket: 'assets-scratch',
                     exclude: [/.*\.html$/],
                     deleteAll: false,
-                    format: now,
+                    format: 'webpack/' + now,
                 })
             ] : []
         ))
