@@ -134,7 +134,7 @@ module.exports = [
         output: {
             path: path.resolve(__dirname, 'build'),
             filename: '[name].[chunkhash].js',
-            publicPath: process.env.NODE_ENV === 'production' ? 'https://assets.scratch.kids123code.com/' + now + '/' : '/'
+            publicPath: process.env.NODE_ENV === 'production' ? 'https://assets.scratch.kids123code.com/webpack/' + now + '/' : '/'
         },
         externals: {
             React: 'react',
@@ -221,7 +221,7 @@ module.exports = [
                     region: 'oss-cn-qingdao',
                     bucket: 'assets-scratch',
                     exclude: [/.*\.html$/],
-                    deleteAll: false,
+                    deleteAll: true,
                     format: 'webpack/' + now,
                 })
             ] : []
