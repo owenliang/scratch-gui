@@ -15,25 +15,18 @@ import xhr from 'xhr';
 import queryString from 'query-string';
 import classNames from 'classnames';
 
-// 一坨图片
-import up from './btns/up.png';
-import up_active from './btns/up_active.png';
-import down from './btns/down.png';
-import down_active from './btns/down_active.png';
-import left from './btns/left.png';
-import left_active from './btns/left_active.png';
-import right from './btns/right.png';
-import right_active from './btns/right_active.png';
-import space from './btns/space.png';
-import space_active from './btns/space_active.png';
-
 import {setKeyPressed, setKeyUnPressed} from '../../reducers/h5';
 import bindAll from "lodash.bindall";
+import analytics from '../../lib/analytics';
 
 if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
     // Warn before navigating away
     window.onbeforeunload = () => true;
 }
+
+// Register "base" page view
+analytics.pageview('/h5.html');
+
 
 class H5 extends React.Component {
 

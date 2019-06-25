@@ -12,8 +12,12 @@ import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
 import QRCode from 'qrcode';
+import analytics from '../../../lib/analytics';
 
 const { Header, Content, Footer } = Layout;
+
+// Register "base" page view
+analytics.pageview('/my.html');
 
 // 我的个人主页
 class My extends React.Component {
