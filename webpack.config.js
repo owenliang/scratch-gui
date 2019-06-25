@@ -221,7 +221,7 @@ module.exports = [
                     region: 'oss-cn-qingdao',
                     bucket: 'assets-scratch',
                     exclude: [/.*\.html$/],
-                    deleteAll: true,
+                    deleteAll: false,
                     format: 'webpack/' + now,
                 })
             ] : []

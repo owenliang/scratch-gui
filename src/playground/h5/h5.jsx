@@ -230,7 +230,7 @@ class H5 extends React.Component {
                           onMouseUp={this.handleUpEnd}
                           className={classNames(styles.upBtn, styles.directionBtns, {[styles.active]: this.props.up})}
                       />
-                      <div src={down}
+                      <div
                            onTouchStart={this.handleDownStart}
                            onTouchEnd={this.handleDownEnd}
                            onTouchCancel={this.handleDownEnd}
