@@ -9,7 +9,7 @@ import TitledHOC from '../../lib/titled-hoc.jsx';
 import ConnectedPlayer from '../player.jsx';
 import styles from './h5.css';
 import logo123 from '../../components/menu-bar/logo123.png';
-import qrcode from './qrcode.jpg';
+import qrcode from './shiting.png';
 import wx from 'weixin-js-sdk';
 import xhr from 'xhr';
 import queryString from 'query-string';
