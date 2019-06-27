@@ -16,6 +16,10 @@ var postcssImport = require('postcss-import');
 const WebpackAliOSSPlugin = require('webpack-oss');
 var now = Date.now();
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+
 const base = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     devtool: 'cheap-module-source-map',
@@ -70,8 +74,10 @@ const base = {
         {
             test: /\.css$/,
             exclude: [/[\\/]node_modules[\\/].*antd/],
-            use: [{
-                loader: 'style-loader'
+            use: [process.env.NODE_ENV === 'production' ? {
+                loader: MiniCssExtractPlugin.loader,
+            }: {
+                loader: 'style-loader',
             }, {
                 loader: 'css-loader',
                 options: {
@@ -99,8 +105,10 @@ const base = {
         {
             test: /\.css$/,
             include: [/[\\/]node_modules[\\/].*antd/],
-            use: [{
-                loader: 'style-loader'
+            use: [process.env.NODE_ENV === 'production' ? {
+                loader: MiniCssExtractPlugin.loader,
+            }: {
+                loader: 'style-loader',
             }, {
                 loader: 'css-loader',
                 options: {
@@ -110,15 +118,41 @@ const base = {
             }]
         }]
     },
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                include: /\.min\.js$/
-            })
-        ]
-    },
+    optimization: {},
     plugins: []
 };
+
+// 生产环境判定
+if (process.env.NODE_ENV === 'production') {
+    // 压缩
+    base.optimization['minimizer'] = [
+        new UglifyJsPlugin({
+            include: /\.js$/,
+            parallel: true,
+            uglifyOptions: {
+                output: {
+                    comments: false,
+                },
+            }
+        })
+    ];
+
+    // CSS提取
+    var cssPlugin = new MiniCssExtractPlugin({
+        filename: '[name].[hash].css',
+        chunkFilename: '[id].[hash].css',
+    });
+    base.plugins.push(cssPlugin);
+
+    // CSS压缩
+    var cssOptPlugin = new OptimizeCssAssetsPlugin({
+        cssProcessorPluginOptions: {
+            preset: ['default', { discardComments: { removeAll: true } }],
+        },
+        canPrint: true
+    });
+    base.plugins.push(cssOptPlugin);
+}
 
 module.exports = [
     // to run editor examples
@@ -267,5 +301,3 @@ module.exports = [
             ])
         })) : []
 );
-
-console.log(module.exports);
