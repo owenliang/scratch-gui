@@ -7,13 +7,13 @@ import { Table, Divider, Tag, Button, message } from 'antd';
 import xhr from 'xhr';
 import queryString from 'query-string';
 import ProviderHoc from '../../base/provider-hoc';
-import {loadProjectListDone, delProject,  openShareModal, closeShareModal,} from '../../reducers/my';
+import {loadProjectListDone, delProject,  openShareModal, closeShareModal,setShare} from '../../reducers/my';
 import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
 import QRCode from 'qrcode';
 import analytics from '../../../lib/analytics';
-
+import { Switch } from 'antd';
 const { Header, Content, Footer } = Layout;
 
 // Register "base" page view
@@ -65,14 +65,64 @@ class My extends React.Component {
         ];
     }
 
+    getShareURL(proj_id) {
+        return `${window.location.protocol}//${window.location.host}/h5.html#${proj_id}`;
+    }
+
     handleClickShare(proj_id) {
-        QRCode.toDataURL(`https://scratch.kids123code.com/h5.html#${proj_id}`, (err, url) => {
-            this.props.onOpenShareModal(url);
-        })
+        new Promise((resolve, reject) => {
+            // 生成二维码
+            let shareURL = this.getShareURL(proj_id);
+            QRCode.toDataURL(shareURL, (err, url) => {
+                resolve(url);
+            })
+        }).then((url) => {
+            return new Promise((resolve, reject) => {
+                // 获取分享状态
+                let params = queryString.stringify({project_id: proj_id})
+
+                const opts = {
+                    method: 'get',
+                    url: `/api/project/v1/get_share?${params}`,
+                };
+                xhr(opts, (err, response) => {
+                    if (response.statusCode != 200) {
+                        message.error('网络异常', 1);
+                        return;
+                    }
+                    let r = JSON.parse(response['body']);
+                    let data = r['data'];
+                    this.props.onUpdateShare(data['can_share']);
+                    resolve(url);
+                });
+            });
+        }).then((url) => {
+            this.props.onOpenShareModal(proj_id, url);
+        });
     }
 
     handleCloseShare() {
         this.props.onCloseShareModal()
+    }
+
+    handleSetShare(checked) {
+        var formData = new FormData();
+        formData.append('project_id', this.props.modalProjectID);
+        formData.append('can_share', checked ? 1 : 0);
+
+        const opts = {
+            method: 'post',
+            url: `/api/project/v1/set_share`,
+            body: formData,
+        };
+        xhr(opts, (err, response) => {
+            // 需要重新从当前列表中删掉这个项目
+            if (response.statusCode == 200) {
+                this.props.onUpdateShare(checked);
+            } else {
+                message.error('网络异常', 1);
+            }
+        });
     }
 
     handleDelProject(proj_id) {
@@ -136,6 +186,9 @@ class My extends React.Component {
             datasource.push(item);
         }
 
+        // 网页预览地址
+        let shareURL = this.getShareURL(this.props.modalProjectID);
+
         return (
             <Layout>
                 <Header className={styles.header}>
@@ -165,9 +218,21 @@ class My extends React.Component {
                     mask={true}
                     onCancel={this.handleCloseShare.bind(this)}
                 >
-                    {
-                        this.props.shareDataURI ? <img src={this.props.shareDataURI} className={styles.wxQrcode}/> : null
-                    }
+                    <div className={styles['share-modal']}>
+                        <div>
+                            开启分享：<Switch onChange={this.handleSetShare.bind(this)} checked={this.props.canShare}/>
+                        </div>
+                        {
+                            this.props.shareDataURI && this.props.canShare ? (
+                                <React.Fragment>
+                                    <div>
+                                        网页预览：<a href={shareURL} target="_blank">{shareURL}</a>
+                                    </div>
+                                    <img src={this.props.shareDataURI} className={styles.wxQrcode} />
+                                </React.Fragment>
+                            ) : null
+                        }
+                    </div>
                 </Modal>
             </Layout>
         )
@@ -183,14 +248,17 @@ const mapStateToProps = state => {
         userinfo: state.loginChecker.userinfo,
         shareModalShown: state.my.shareModalShown,
         shareDataURI: state.my.shareDataURI,
+        canShare: state.my.canShare ? true: false,
+        modalProjectID: state.my.projectID,
     };
 }
 
 const mapDispatchToProps = dispatch => ({
     loadProjectListDone: (page, size, total, projects) => dispatch(loadProjectListDone(page, size, total, projects)),
     delProject: (proj_id) => dispatch(delProject(proj_id)),
-    onOpenShareModal: (dataURI) => dispatch(openShareModal(dataURI)),
+    onOpenShareModal: (proj_id, dataURI) => dispatch(openShareModal(proj_id, dataURI)),
     onCloseShareModal: () =>dispatch(closeShareModal()),
+    onUpdateShare: (canShare) => dispatch(setShare(canShare)),
 });
 
 let connectedMy = connect(

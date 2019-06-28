@@ -2,6 +2,7 @@ const LOAD_PROJECT_LIST_DONE = 'my/LOAD_PROJECT_LIST_DONE';
 const DEL_PROJECT = 'my/DEL_PROJECT';
 const OPEN_SHARE_MODAL = 'my/OPEN_SHARE_MODAL';
 const CLOSE_SHARE_MODAL = 'my/CLOSE_SHARE_MODAL';
+const SET_SHARE = 'my/SET_SHARE'
 
 // we are initializing to a blank string instead of an actual title,
 // because it would be hard to localize here
@@ -12,6 +13,8 @@ const initialState = {
     projects: [],
     shareModalShown: false, // 微信二维码modal
     shareDataURI: '',
+    canShare: 0, // 是否可分享
+    projectID: 0, // 当前弹窗项目ID
 };
 
 const reducer = function (state, action) {
@@ -28,9 +31,11 @@ const reducer = function (state, action) {
         }
         return Object.assign({}, state, {projects: projects});
     case OPEN_SHARE_MODAL:
-       return Object.assign({}, state, {shareModalShown: true, shareDataURI: action.dataURI})
+       return Object.assign({}, state, {shareModalShown: true, shareDataURI: action.dataURI, projectID: action.projectID})
     case CLOSE_SHARE_MODAL:
        return Object.assign({}, state, {shareModalShown: false, shareDataURI: ''})
+    case SET_SHARE:
+        return Object.assign({}, state, {canShare: action.canShare})
     default:
         return state;
     }
@@ -49,13 +54,19 @@ const delProject = (proj_id) => ({
     proj_id: proj_id,
 })
 
-const openShareModal = (dataURI) => ({
+const openShareModal = (projectID, dataURI) => ({
     type:  OPEN_SHARE_MODAL,
     dataURI: dataURI,
+    projectID: projectID,
 })
 
 const closeShareModal = () => ({
     type: CLOSE_SHARE_MODAL,
+})
+
+const setShare = (canShare) => ({
+    type:SET_SHARE,
+    canShare: canShare
 })
 
 export {
@@ -64,4 +75,5 @@ export {
     delProject,
     openShareModal,
     closeShareModal,
+    setShare,
 };
