@@ -71,52 +71,53 @@ const ProjectFetcherHOC = function (WrappedComponent) {
             }
         }
         fetchProject (projectId, loadingState) {
-            return storage
-                .load(storage.AssetType.Project, projectId, storage.DataFormat.SB3)
-                .then((projectAsset) => {
+            return new Promise((resolve, reject) => {
+                    // 先load元数据
                     if (parseInt(projectId)) {
-                        return new Promise(
-                            (resolve, reject) => {
-                                // 再load一下元数据
-                                const opts = {
-                                    method: 'get',
-                                    url: `/api/project/v1/metadata/${projectId}`,
-                                    // If we set json:true then the body is double-stringified, so don't
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                };
-                                xhr(opts, (err, response) => {
-                                    if (err) return reject(err);
+                        const opts = {
+                            method: 'get',
+                            url: `/api/project/v1/metadata/${projectId}`,
+                            // If we set json:true then the body is double-stringified, so don't
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                        };
+                        xhr(opts, (err, response) => {
+                            if (err) return reject(err);
 
-                                    let r = JSON.parse(response['body']);
-
-                                    this.props.onUpdateProjectMeta(r);
-
-                                    resolve({projectAsset: projectAsset, projectTitle: r['name']});
-                                });
+                            if (response.statusCode != 200) {
+                                return reject(new Error('休想偷看其他同学的程序!'));
                             }
-                        );
-                    } else {
-                        return {projectAsset: projectAsset, projectTitle: null};
+
+                            let r = JSON.parse(response['body']);
+
+                            this.props.onUpdateProjectMeta(r);
+                            this.props.onUpdateProjectTitle(r['name']);
+
+                            resolve({metadata: r});
+                        });
+                    } else {    // 空项目不需要load metadata
+                        setTimeout(()=>{resolve({metadata: null});}, 0);
                     }
-                })
-                .then(({projectAsset, projectTitle}) => {
-                    if (projectAsset) {
-                        this.props.onFetchedProjectData(projectAsset.data, loadingState);
-                        if (projectTitle) {
-                            this.props.onUpdateProjectTitle(projectTitle);
-                        }
-                    } else {
-                        // Treat failure to load as an error
-                        // Throw to be caught by catch later on
-                        throw new Error('Could not find project');
-                    }
-                })
-                .catch(err => {
-                    this.props.onError(err);
-                    log.error(err);
-                });
+                }
+            ).then(({metadata}) => {
+                let assetId = projectId;
+                if (metadata && metadata['code_name']) { // 如果metadata包含code的混淆名称, 那么用混淆名称从CDN拉取
+                    assetId = metadata['code_name'];
+                }
+                return storage.load(storage.AssetType.Project, assetId, storage.DataFormat.SB3);
+            }).then((projectAsset) => {
+                if (projectAsset) {
+                    this.props.onFetchedProjectData(projectAsset.data, loadingState);
+                } else {
+                    // Treat failure to load as an error
+                    // Throw to be caught by catch later on
+                    throw new Error('Could not find project');
+                }
+            }).catch(err => {
+                this.props.onError(err);
+                log.error(err);
+            });
         }
         render () {
             const {
