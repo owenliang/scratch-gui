@@ -210,29 +210,6 @@ const ProjectSaverHOC = function (WrappedComponent) {
             // we just finished saving).
             // const savedVMState = this.props.vm.toJSON();
             return this.props.vm.saveProjectSb3().then((code_blob) => {
-                return new Promise((resolve, reject) => {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        var code64 = e.target.result.replace(/^data:.+;base64,/, '');
-                        resolve(code64);
-                    }
-                    reader.readAsDataURL(code_blob);
-                });
-            })
-            /*return Promise.all(this.props.vm.assets
-                .filter(asset => !asset.clean)
-                .map(
-                    asset => storage.store(
-                        asset.assetType,
-                        asset.dataFormat,
-                        asset.data,
-                        asset.assetId
-                    ).then(
-                        () => (asset.clean = true)
-                    )
-                )
-            )*/
-            .then((code64) => {
                 // 截图
                 return new Promise((resolve, reject) => {
                     try {
@@ -240,7 +217,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         this.props.vm.renderer.requestSnapshot(dataURI => {
                             this.props.vm.postIOData('video', {forceTransparentPreview: false});
                             // 继续上传
-                            resolve({dataURI: dataURI, code64:code64});
+                            resolve({dataURI: dataURI, code:code_blob});
                         });
                         this.props.vm.renderer.draw();
                     } catch (e) {
@@ -250,18 +227,16 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         // to save the thumbnail is not vitally important to the user.
                     }
                 })
-            }).then(({dataURI, code64}) => {
+            }).then(({dataURI, code}) => {
+                // 文件表单
+                let form = new FormData();
+                form.append('name', this.props.reduxProjectTitle);
+                form.append('thumbnail', dataURI);
+                form.append('project_id', projectId ? projectId:0);
+                form.append('code', new Blob([code]));
+
                 const opts = {
-                    body: JSON.stringify({
-                        name: this.props.reduxProjectTitle,
-                        code: code64,
-                        thumbnail: dataURI,
-                        projectId:  projectId,
-                    }),
-                    // If we set json:true then the body is double-stringified, so don't
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    body: form,
                     withCredentials: true
                 };
                 const creatingProject = projectId === null || typeof projectId === 'undefined';
