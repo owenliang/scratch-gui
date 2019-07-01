@@ -6,9 +6,11 @@ import Button from '../button/button.jsx';
 
 import styles from './share-button.css';
 
+
 const ShareButton = ({
     className,
     onClick,
+    children
 }) => (
     <Button
         className={classNames(
@@ -17,7 +19,7 @@ const ShareButton = ({
         )}
         onClick={onClick}
     >
-        上传作品
+        {children}
     </Button>
 );
 

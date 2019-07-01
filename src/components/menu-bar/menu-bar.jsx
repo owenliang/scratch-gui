@@ -28,9 +28,9 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 
 import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
-import { Input } from 'antd';
+import { Input , Spin, message} from 'antd';
 import {openLoginForm, openAccountMenu as openMyAccountMenu, closeAccountForm as closeMyAccountMenu, startLogout} from '../../reducers/login-checker';
-import {message} from 'antd';
+
 
 import {
     autoUpdateProject,
@@ -484,10 +484,12 @@ class MenuBar extends React.Component {
                                 onUpdateProjectTitle={this.props.onUpdateProjectTitle}
                             />
                         </div>
-                        <div
-                            className={classNames(styles.menuBarItem)}
-                        >
-                            <ShareButton className={styles.menuBarButton} onClick={this.onSaveProject}>上传作品</ShareButton>
+                        <div className={classNames(styles.menuBarItem)}>
+                            <Spin spinning={this.props.isStoringProject}>
+                                <ShareButton className={styles.menuBarButton} onClick={this.onSaveProject}>
+                                    上传作品
+                                </ShareButton>
+                            </Spin>
                         </div>
                     </div>
                 </div>
