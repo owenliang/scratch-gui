@@ -24,6 +24,7 @@ const START_REMIXING = 'scratch-gui/project-state/START_REMIXING';
 const START_UPDATING_BEFORE_CREATING_COPY = 'scratch-gui/project-state/START_UPDATING_BEFORE_CREATING_COPY';
 const START_UPDATING_BEFORE_CREATING_NEW = 'scratch-gui/project-state/START_UPDATING_BEFORE_CREATING_NEW';
 const START_UPDATING_BEFORE_FILE_UPLOAD = 'scratch-gui/project-state/START_UPDATING_BEFORE_FILE_UPLOAD';
+const SET_STORE_PROJECT_STATUS = 'scratch-gui/project-state/SET_STORE_PROJECT_STATUS';
 
 const defaultProjectId = '0'; // hardcoded id of default project
 
@@ -112,7 +113,8 @@ const initialState = {
     error: null,
     projectData: null,
     projectId: null,
-    loadingState: LoadingState.NOT_LOADED
+    loadingState: LoadingState.NOT_LOADED,
+    isStoringProject: false,
 };
 
 const reducer = function (state, action) {
@@ -383,6 +385,10 @@ const reducer = function (state, action) {
             });
         }
         return state;
+    case SET_STORE_PROJECT_STATUS:
+       return Object.assign({}, state, {
+           isStoringProject: action.status,
+       });
     default:
         return state;
     }
@@ -531,6 +537,16 @@ const remixProject = () => ({
     type: START_REMIXING
 });
 
+const startStoreProject = () => ({
+    type: SET_STORE_PROJECT_STATUS,
+    status: true,
+})
+
+const endStoreProject = () => ({
+    type: SET_STORE_PROJECT_STATUS,
+    status: false,
+})
+
 export {
     reducer as default,
     initialState as projectStateInitialState,
@@ -564,5 +580,7 @@ export {
     requestNewProject,
     requestProjectUpload,
     saveProjectAsCopy,
-    setProjectId
+    setProjectId,
+    startStoreProject,
+    endStoreProject,
 };

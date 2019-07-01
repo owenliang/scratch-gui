@@ -30,6 +30,7 @@ import {openTipsLibrary} from '../../reducers/modals';
 import {setPlayer} from '../../reducers/mode';
 import { Input } from 'antd';
 import {openLoginForm, openAccountMenu as openMyAccountMenu, closeAccountForm as closeMyAccountMenu, startLogout} from '../../reducers/login-checker';
+import {message} from 'antd';
 
 import {
     autoUpdateProject,
@@ -242,6 +243,18 @@ class MenuBar extends React.Component {
         // 登录校验
         if (!this.props.userinfo['username']) {
             this.props.onClickMyLogin();
+            return;
+        }
+
+        // 是否有变更
+        if (!this.props.projectChanged) {
+            message.info('作品没有变化, 继续创作吧!', 1);
+            return;
+        }
+
+        // 是否正在上传
+        if (this.props.isStoringProject) {
+            message.info('正在上传中, 稍安勿躁!', 1);
             return;
         }
 
@@ -580,6 +593,7 @@ MenuBar.defaultProps = {
 
 const mapStateToProps = state => {
     const loadingState = state.scratchGui.projectState.loadingState;
+    const isStoringProject = state.scratchGui.projectState.isStoringProject;
     const user = state.session && state.session.session && state.session.session.user;
     const loginChecker = state.scratchGui.loginChecker;
 
@@ -598,6 +612,7 @@ const mapStateToProps = state => {
         isShowingWithoutId: getIsShowingWithoutId(loadingState),
         userinfo: loginChecker.userinfo,
         accountMenuOpen: loginChecker.openAccountMenu,
+        isStoringProject: isStoringProject,
     };
 };
 

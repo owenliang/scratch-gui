@@ -31,7 +31,9 @@ import {
     getIsShowingWithId,
     getIsShowingWithoutId,
     getIsUpdating,
-    projectError
+    projectError,
+    startStoreProject,
+    endStoreProject,
 } from '../reducers/project-state';
 
 /**
@@ -202,6 +204,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
         storeProject (projectId, requestParams) {
             requestParams = requestParams || {};
             this.clearAutoSaveTimeout();
+            this.props.startStoreProject();
             // Serialize VM state now before embarking on
             // the asynchronous journey of storing assets to
             // the server. This ensures that assets don't update
@@ -283,9 +286,11 @@ const ProjectSaverHOC = function (WrappedComponent) {
                     if (id && this.props.onUpdateProjectThumbnail) {
                         this.storeProjectThumbnail(id);
                     }
+                    this.props.endStoreProject();
                     return response;
                 })
                 .catch(err => {
+                    this.props.endStoreProject();
                     // 弹窗
                     message.error(err.message, 1);
                     log.error(err);
@@ -348,6 +353,8 @@ const ProjectSaverHOC = function (WrappedComponent) {
                 reduxProjectId,
                 reduxProjectTitle,
                 setAutoSaveTimeoutId: setAutoSaveTimeoutIdProp,
+                startStoreProject,
+                endStoreProject,
                 /* eslint-enable no-unused-vars */
                 ...componentProps
             } = this.props;
@@ -433,7 +440,9 @@ const ProjectSaverHOC = function (WrappedComponent) {
         onShowSaveSuccessAlert: () => showAlertWithTimeout(dispatch, 'saveSuccess'),
         onShowSavingAlert: () => showAlertWithTimeout(dispatch, 'saving'),
         onUpdatedProject: (projectId, loadingState) => dispatch(doneUpdatingProject(projectId, loadingState)),
-        setAutoSaveTimeoutId: id => dispatch(setAutoSaveTimeoutId(id))
+        setAutoSaveTimeoutId: id => dispatch(setAutoSaveTimeoutId(id)),
+        startStoreProject: () => dispatch(startStoreProject()),
+        endStoreProject: () => dispatch(endStoreProject()),
     });
     // Allow incoming props to override redux-provided props. Used to mock in tests.
     const mergeProps = (stateProps, dispatchProps, ownProps) => Object.assign(
