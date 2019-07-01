@@ -254,7 +254,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
                 return new Promise((resolve, reject) => {
                     xhr(opts, (err, response) => {
                         if (err) {
-                            return reject(err);
+                            return reject(new Error('电脑没联网哦!'));
                         }
 
                         if (response.statusCode == 403) {
@@ -277,8 +277,7 @@ const ProjectSaverHOC = function (WrappedComponent) {
                         resolve(body);
                     });
                 });
-            })
-                .then(response => {
+            }).then(response => {
                     // 弹窗
                     message.info('上传成功', 1);
                     this.props.onSetProjectUnchanged();
@@ -288,12 +287,11 @@ const ProjectSaverHOC = function (WrappedComponent) {
                     }
                     this.props.endStoreProject();
                     return response;
-                })
-                .catch(err => {
+            }).catch(err => {
                     this.props.endStoreProject();
                     // 弹窗
                     message.error(err.message, 1);
-                    log.error(err);
+                    // log.error(err);
                     // throw err; // pass the error up the chain
                 });
         }

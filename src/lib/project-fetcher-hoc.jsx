@@ -64,7 +64,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 this.fetchProject(this.props.reduxProjectId, this.props.loadingState);
             }
             if (this.props.isShowingProject && !prevProps.isShowingProject) {
-                this.props.onProjectUnchanged();
+                // this.props.onProjectUnchanged();
             }
             if (this.props.isShowingProject && (prevProps.isLoadingProject || prevProps.isCreatingNew)) {
                 this.props.onActivateTab(BLOCKS_TAB_INDEX);
