@@ -222,12 +222,12 @@ class My extends React.Component {
                         <div>
                             开启分享：<Switch onChange={this.handleSetShare.bind(this)} checked={this.props.canShare}/>
                         </div>
+                        <div>
+                            网页预览：<a href={shareURL} target="_blank">{shareURL}</a>
+                        </div>
                         {
                             this.props.shareDataURI && this.props.canShare ? (
                                 <React.Fragment>
-                                    <div>
-                                        网页预览：<a href={shareURL} target="_blank">{shareURL}</a>
-                                    </div>
                                     <img src={this.props.shareDataURI} className={styles.wxQrcode} />
                                 </React.Fragment>
                             ) : null
