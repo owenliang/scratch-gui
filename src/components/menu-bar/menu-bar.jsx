@@ -247,10 +247,10 @@ class MenuBar extends React.Component {
         }
 
         // 是否有变更
-        if (!this.props.projectChanged) {
-            message.info('作品没有变化, 继续创作吧!', 1);
-            return;
-        }
+        //if (!this.props.projectChanged) {
+        //    message.info('作品没有变化, 继续创作吧!', 1);
+        //    return;
+        //}
 
         // 是否正在上传
         if (this.props.isStoringProject) {
