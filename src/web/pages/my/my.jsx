@@ -13,8 +13,10 @@ import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
 import QRCode from 'qrcode';
 import analytics from '../../../lib/analytics';
-import { Switch } from 'antd';
+import { Switch, Input, Form, Icon, Checkbox } from 'antd';
 const { Header, Content, Footer } = Layout;
+import SearchBar from './components/search-bar/search-bar';
+
 
 // Register "base" page view
 analytics.pageview('/my.html');
@@ -160,11 +162,21 @@ class My extends React.Component {
 
     componentDidMount() {
         // 发起第一页的请求
-        this.loadPage(1, 20);
+        this.loadPage({
+            page: this.props.page,
+            size: this.props.size,
+        });
     }
 
-    loadPage(page, size) {
-        let params = {page: page, size: size}
+    loadPage({page, size, searchAuthor, searchTitle}) {
+        let params = {
+            page: page,
+            size: size,
+            search_author: searchAuthor ? searchAuthor : '',
+            search_title: searchTitle ? searchTitle : '',
+        }
+
+        console.log(params);
 
         const opts = {
             method: 'get',
@@ -179,8 +191,32 @@ class My extends React.Component {
                 return;
             }
             let data = r['data'];
-            this.props.loadProjectListDone(params['page'], params['size'], data['total'], data['rows']);
+            this.props.loadProjectListDone(params['page'], params['size'], data['total'], data['rows'], params.search_author, params.search_title);
         });
+    }
+
+    // 翻页
+    onChangePage(page) {
+        let params = {
+            page: page.current,
+            size: page.pageSize,
+            searchAuthor: this.props.searchAuthor,
+            searchTitle: this.props.searchTitle,
+        };
+
+        this.loadPage(params);
+    }
+
+    // 搜索
+    onSearch(data) {
+        let params = {
+            page: 1,
+            size: this.props.size,
+            searchAuthor: data.search_author ? data.search_author : '',
+            searchTitle: data.search_title ? data.search_title : '',
+        };
+
+        this.loadPage(params);
     }
 
     render () {
@@ -205,10 +241,14 @@ class My extends React.Component {
                         <div  className={styles.toolbar}>
                             <Button type="primary" onClick={()=>{window.location='/';}}>前去创作</Button>
                         </div>
+                        <Divider dashed/>
+                        <div className={styles.searchBar}>
+                            <SearchBar onSearch={this.onSearch.bind(this)}/>
+                        </div>
                         <Table columns={this.columns}
                                dataSource={datasource}
                                pagination={{defaultPageSize: 20, current: this.props.page, pageSize: this.props.size, total: this.props.total}}
-                               onChange={(page) => {this.loadPage(page.current, page.pageSize);}}
+                               onChange={this.onChangePage.bind(this)}
                         />
                     </div>
                 </Content>
@@ -255,11 +295,13 @@ const mapStateToProps = state => {
         shareDataURI: state.my.shareDataURI,
         canShare: state.my.canShare ? true: false,
         modalProjectID: state.my.projectID,
+        searchAuthor: state.my.searchAuthor,
+        searchTitle: state.my.searchTitle,
     };
 }
 
 const mapDispatchToProps = dispatch => ({
-    loadProjectListDone: (page, size, total, projects) => dispatch(loadProjectListDone(page, size, total, projects)),
+    loadProjectListDone: (page, size, total, projects, searchAuthor, searchTitle) => dispatch(loadProjectListDone(page, size, total, projects,  searchAuthor, searchTitle)),
     delProject: (proj_id) => dispatch(delProject(proj_id)),
     onOpenShareModal: (proj_id, dataURI) => dispatch(openShareModal(proj_id, dataURI)),
     onCloseShareModal: () =>dispatch(closeShareModal()),

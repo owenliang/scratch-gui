@@ -7,7 +7,7 @@ const SET_SHARE = 'my/SET_SHARE'
 // we are initializing to a blank string instead of an actual title,
 // because it would be hard to localize here
 const initialState = {
-    page: 0,
+    page: 1,
     size: 20,
     total: 0,
     projects: [],
@@ -15,13 +15,18 @@ const initialState = {
     shareDataURI: '',
     canShare: 0, // 是否可分享
     projectID: 0, // 当前弹窗项目ID
+    searchTitle: '',
+    searchAuthor: '',
 };
 
 const reducer = function (state, action) {
     if (typeof state === 'undefined') state = initialState;
     switch (action.type) {
     case LOAD_PROJECT_LIST_DONE:
-        return Object.assign({}, state, {page: action.page, size: action.size, total: action.total, projects: action.projects});
+        return Object.assign({}, state, {
+            page: action.page, size: action.size, total: action.total, projects: action.projects,
+            searchTitle: action.searchTitle, searchAuthor: action.searchAuthor,
+        });
     case DEL_PROJECT:
         let projects = [];
         for (let i = 0; i < state.projects.length; ++i) {
@@ -41,12 +46,14 @@ const reducer = function (state, action) {
     }
 };
 
-const loadProjectListDone = (page, size, total, projects) => ({
+const loadProjectListDone = (page, size, total, projects, searchAuthor, searchTitle) => ({
     type: LOAD_PROJECT_LIST_DONE,
     page: page,
     size: size,
     projects: projects,
     total: total,
+    searchAuthor: searchAuthor,
+    searchTitle: searchTitle,
 })
 
 const delProject = (proj_id) => ({
