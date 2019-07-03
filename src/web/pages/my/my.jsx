@@ -242,9 +242,14 @@ class My extends React.Component {
                             <Button type="primary" onClick={()=>{window.location='/';}}>前去创作</Button>
                         </div>
                         <Divider dashed/>
-                        <div className={styles.searchBar}>
-                            <SearchBar onSearch={this.onSearch.bind(this)}/>
-                        </div>
+                        {
+                            this.props.userinfo['superuser'] ?
+                                (
+                                <div className={styles.searchBar}>
+                                    <SearchBar onSearch={this.onSearch.bind(this)}/>
+                                </div>
+                                ) : null
+                        }
                         <Table columns={this.columns}
                                dataSource={datasource}
                                pagination={{defaultPageSize: 20, current: this.props.page, pageSize: this.props.size, total: this.props.total}}
