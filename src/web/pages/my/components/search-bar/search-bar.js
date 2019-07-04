@@ -21,7 +21,7 @@ class SearchBar extends React.Component {
                 <Form layout="inline" onSubmit={this.handleSubmit.bind(this)}>
                     <Form.Item >
                         {
-                            getFieldDecorator('search_author')(<Input addonBefore={'作者昵称'}/>)
+                            getFieldDecorator('search_author')(<Input addonBefore={'作者帐号'}/>)
                         }
                     </Form.Item>
                     <Form.Item>

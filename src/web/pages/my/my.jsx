@@ -176,8 +176,6 @@ class My extends React.Component {
             search_title: searchTitle ? searchTitle : '',
         }
 
-        console.log(params);
-
         const opts = {
             method: 'get',
             url: `/api/project/v1/my_list?${queryString.stringify(params)}`,
