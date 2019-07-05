@@ -159,10 +159,10 @@ module.exports = [
     defaultsDeep({}, base, {
         entry: {
             'lib.min': ['react', 'react-dom'],
-            'gui': './src/playground/index.jsx',
+            'gui': './src/playground/index_wrapper.js',
             'blocksonly': './src/playground/blocks-only.jsx',
             'compatibilitytesting': './src/playground/compatibility-testing.jsx',
-            'player': './src/playground/h5/h5.jsx',
+            'player': './src/playground/h5/h5_wrapper.js',
             'my': './src/web/pages/my/my.jsx'
         },
         output: {
@@ -186,10 +186,10 @@ module.exports = [
             ])
         },
         optimization: {
-            splitChunks: {
-                chunks: 'all',
-                name: 'lib.min'
-            },
+            //splitChunks: {
+            //    chunks: 'all',
+            //    name: 'lib.min'
+            //},
             runtimeChunk: {
                 name: 'lib.min'
             }

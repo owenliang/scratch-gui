@@ -312,7 +312,4 @@ const WrappedH5 = compose(
     TitledHOC
 )(ConnectedH5);
 
-const appTarget = document.createElement('div');
-document.body.appendChild(appTarget);
-
-ReactDOM.render(<WrappedH5 isPlayerOnly />, appTarget);
+export default WrappedH5;
