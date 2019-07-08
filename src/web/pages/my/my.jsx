@@ -46,6 +46,11 @@ class My extends React.Component {
                 key: 'author',
             },
             {
+                title: '点赞数',
+                dataIndex: 'love',
+                key: 'love',
+            },
+            {
                 title: '创建时间',
                 dataIndex: 'create_time',
                 key: 'create_time',
