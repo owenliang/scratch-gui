@@ -177,3 +177,44 @@
     user-select:none;
 }
 
+.love-container {
+    margin: 30px 0 0 0;
+}
+
+.love-btn {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+    padding: 15px 15px;
+    background-color: white;
+    -webkit-border-radius: 70px;
+    -moz-border-radius: 70px;
+    border-radius: 70px;
+}
+
+.love-btn.active {
+    background-color: #f9d3be;
+}
+
+.love-img {
+    width: 40px;
+    height: 40px;
+    display: block;
+}
+
+.love-count {
+    display: inline-block;
+}
+
+.love-count-container {
+    text-align: center;
+    font-size: 16px;
+    color: #222;
+    margin: 5px 0;
+}
+
+.love-tips {
+    margin: 5px 0;
+    text-align:center;
+    color: #999;
+}

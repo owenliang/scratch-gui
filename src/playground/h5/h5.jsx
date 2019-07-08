@@ -15,9 +15,10 @@ import xhr from 'xhr';
 import queryString from 'query-string';
 import classNames from 'classnames';
 
-import {setKeyPressed, setKeyUnPressed} from '../../reducers/h5';
+import {setKeyPressed, setKeyUnPressed, setLove, clickLove, setClickLove} from '../../reducers/h5';
 import bindAll from "lodash.bindall";
 import analytics from '../../lib/analytics';
+import loveImg from './love.svg';
 
 if (process.env.NODE_ENV === 'production' && typeof window === 'object') {
     // Warn before navigating away
@@ -44,6 +45,7 @@ class H5 extends React.Component {
             'handleRightEnd',
             'handleSpaceStart',
             'handleSpaceEnd',
+            'handleClickLove',
         ]);
     }
 
@@ -115,9 +117,50 @@ class H5 extends React.Component {
         this.width -= 5;
     }
 
+    // 获取点赞状态
+    fetchLoveStatus() {
+        let params = {project_id: this.props.projectId};
+        const opts = {
+            method: 'get',
+            url: `/api/project/v1/is_love?${queryString.stringify(params)}`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        };
+        xhr(opts, (err, response) => {
+            if (response.statusCode == 200) {
+                let r = JSON.parse(response['body']);
+                this.props.setLove(r['data']['love']);
+            }
+        });
+    }
+
+    // 点赞
+    handleClickLove() {
+        if (this.props.isLove) {
+            return;
+        }
+
+        this.props.setClickLove();
+
+        let params = {project_id: this.props.projectId};
+        const opts = {
+            method: 'get',
+            url: `/api/project/v1/love?${queryString.stringify(params)}`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        };
+        xhr(opts, (err, response) => {});
+    }
+
     componentDidMount() {
         // 服务端JS签名
         this.fetchSign();
+        // 获取点赞状态
+        if (this.props.projectId) {
+            this.fetchLoveStatus();
+        }
 
         window.addEventListener('contextmenu', function(e) {e.preventDefault();})
     }
@@ -126,6 +169,11 @@ class H5 extends React.Component {
         // 标题/作者更新，重新设置分享
         if (prevProps.projectTitle != this.props.projectTitle || prevProps.projectAuthor != this.props.projectAuthor) {
             this.updateWxShareData();
+        }
+
+        // 获取点赞状态
+        if (prevProps.projectId != this.props.projectId && this.props.projectId) {
+            this.fetchLoveStatus();
         }
     }
 
@@ -204,9 +252,9 @@ class H5 extends React.Component {
     }
 
     render() {
-        this.adjustWidth()
+        this.adjustWidth();
 
-      return (
+        return (
           <div className={styles.h5Container}>
               <div className={styles.header}>
                   <img src={logo123} className={styles.logo} />
@@ -265,6 +313,15 @@ class H5 extends React.Component {
                        className={classNames(styles.spaceBtn, {[styles.active]: this.props.space})}
                   ></div>
               </div>
+              <div className={styles['love-container']}>
+                  <div className={classNames(styles['love-btn'], {[styles.active]: this.props.isLove})} onClick={this.handleClickLove}>
+                      <img src={loveImg} className={styles['love-img']} />
+                  </div>
+                  <div  className={styles['love-count-container']}>
+                    <div className={styles['love-count']}>{this.props.love + (this.props.clickLove ? 1 : 0)}</div>
+                  </div>
+                  <div className={styles['love-tips']}>点赞鼓励一下</div>
+              </div>
               <div className={styles.footer}>
                   <div>
                       <img src={qrcode} className={styles.qrcode}/>
@@ -274,7 +331,7 @@ class H5 extends React.Component {
                   </div>
               </div>
           </div>
-      )
+        );
     }
 }
 
@@ -284,6 +341,7 @@ H5.propTypes = {
 
 const mapStateToProps = state => {
     return {
+        projectId: state.scratchGui.projectState.projectId ? state.scratchGui.projectState.projectId : 0,
         projectTitle: state.scratchGui.projectTitle ? state.scratchGui.projectTitle : '无名作品',
         projectAuthor: state.scratchGui.h5.meta.author ? state.scratchGui.h5.meta.author : '无名作者',
         projectThumbnail:  state.scratchGui.h5.meta.thumbnail ? state.scratchGui.h5.meta.thumbnail : '',
@@ -293,12 +351,17 @@ const mapStateToProps = state => {
         left: state.scratchGui.h5.left,
         right: state.scratchGui.h5.right,
         space: state.scratchGui.h5.space,
+        love: state.scratchGui.h5.meta.love ? state.scratchGui.h5.meta.love : 0,
+        isLove: state.scratchGui.h5.isLove ? true: false,
+        clickLove: state.scratchGui.h5.clickLove,
     }
 };
 
 const mapDispatchToProps = dispatch => ({
     setKeyPressed: (key) => dispatch(setKeyPressed(key)),
-    setKeyUnPressed: (key) => dispatch(setKeyUnPressed(key))
+    setKeyUnPressed: (key) => dispatch(setKeyUnPressed(key)),
+    setLove: (isLove) => dispatch(setLove(isLove)),
+    setClickLove: () => dispatch(setClickLove()),
 });
 
 const ConnectedH5 = connect(
