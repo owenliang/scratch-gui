@@ -7,7 +7,7 @@ import { Table, Divider, Tag, Button, message } from 'antd';
 import xhr from 'xhr';
 import queryString from 'query-string';
 import ProviderHoc from '../../base/provider-hoc';
-import {loadProjectListDone, delProject,  openShareModal, closeShareModal,setShare} from '../../reducers/my';
+import {loadProjectListDone, delProject,  openShareModal, closeShareModal,setShare, startSavingShareData, endSavingShareData} from '../../reducers/my';
 import connect from 'react-redux/es/connect/connect';
 import {compose} from 'redux';
 import  WebLoginCheckerHOC from '../../base/web-login-checker-hoc';
@@ -16,7 +16,7 @@ import analytics from '../../../lib/analytics';
 import { Switch, Input, Form, Icon, Checkbox } from 'antd';
 const { Header, Content, Footer } = Layout;
 import SearchBar from './components/search-bar/search-bar';
-
+import ShareForm from './components/share-form/share-form';
 
 // Register "base" page view
 analytics.pageview('/my.html');
@@ -104,7 +104,7 @@ class My extends React.Component {
                     }
                     let r = JSON.parse(response['body']);
                     let data = r['data'];
-                    this.props.onUpdateShare(data['can_share']);
+                    this.props.onUpdateShare({canShare:data['can_share'], projDesc: data['description']});
                     resolve(url);
                 });
             });
@@ -128,9 +128,8 @@ class My extends React.Component {
             body: formData,
         };
         xhr(opts, (err, response) => {
-            // 需要重新从当前列表中删掉这个项目
             if (response.statusCode == 200) {
-                this.props.onUpdateShare(checked);
+                this.props.onUpdateShare({canShare: (checked? 1 : 0)});
             } else {
                 message.error('网络异常', 1);
             }
@@ -222,6 +221,30 @@ class My extends React.Component {
         this.loadPage(params);
     }
 
+    // 分享编辑
+    onSubmitShareForm(data) {
+        var formData = new FormData();
+        formData.append('project_id', this.props.modalProjectID);
+        formData.append('description', data['description'] ? data['description'] : '');
+
+        const opts = {
+            method: 'post',
+            url: `/api/project/v1/set_share_data`,
+            body: formData,
+        };
+
+        this.props.startSavingShareData();
+
+        xhr(opts, (err, response) => {
+            if (response.statusCode == 200) {
+                message.info('保存成功', 1)
+            } else {
+                message.error('网络异常', 1);
+            }
+            this.props.endSavingShareData();
+        });
+    }
+
     render () {
         let datasource = []
         for (var i = 0; i < this.props.projects.length; ++i) {
@@ -282,6 +305,7 @@ class My extends React.Component {
                             this.props.shareDataURI && this.props.canShare ? (
                                 <React.Fragment>
                                     <img src={this.props.shareDataURI} className={styles.wxQrcode} />
+                                    <ShareForm onSubmit={this.onSubmitShareForm.bind(this)} projDesc={this.props.projDesc} loading={this.props.savingShareData}/>
                                 </React.Fragment>
                             ) : null
                         }
@@ -305,6 +329,8 @@ const mapStateToProps = state => {
         modalProjectID: state.my.projectID,
         searchAuthor: state.my.searchAuthor,
         searchTitle: state.my.searchTitle,
+        projDesc: state.my.projDesc,
+        savingShareData: state.my.savingShareData,
     };
 }
 
@@ -313,7 +339,9 @@ const mapDispatchToProps = dispatch => ({
     delProject: (proj_id) => dispatch(delProject(proj_id)),
     onOpenShareModal: (proj_id, dataURI) => dispatch(openShareModal(proj_id, dataURI)),
     onCloseShareModal: () =>dispatch(closeShareModal()),
-    onUpdateShare: (canShare) => dispatch(setShare(canShare)),
+    onUpdateShare: (shareData) => dispatch(setShare(shareData)),
+    startSavingShareData: () => dispatch(startSavingShareData()),
+    endSavingShareData: () => dispatch(endSavingShareData()),
 });
 
 let connectedMy = connect(

@@ -3,6 +3,7 @@ const DEL_PROJECT = 'my/DEL_PROJECT';
 const OPEN_SHARE_MODAL = 'my/OPEN_SHARE_MODAL';
 const CLOSE_SHARE_MODAL = 'my/CLOSE_SHARE_MODAL';
 const SET_SHARE = 'my/SET_SHARE'
+const SET_SAVING_SHARE_STATUS = 'my/SET_SAVING_SHARE_STATUS'
 
 // we are initializing to a blank string instead of an actual title,
 // because it would be hard to localize here
@@ -14,9 +15,11 @@ const initialState = {
     shareModalShown: false, // 微信二维码modal
     shareDataURI: '',
     canShare: 0, // 是否可分享
+    projDesc: '', // 玩法介绍
     projectID: 0, // 当前弹窗项目ID
     searchTitle: '',
     searchAuthor: '',
+    savingShareData: false, // 正在保存分享数据
 };
 
 const reducer = function (state, action) {
@@ -40,7 +43,9 @@ const reducer = function (state, action) {
     case CLOSE_SHARE_MODAL:
        return Object.assign({}, state, {shareModalShown: false, shareDataURI: ''})
     case SET_SHARE:
-        return Object.assign({}, state, {canShare: action.canShare})
+        return Object.assign({}, state, action.shareData)
+    case SET_SAVING_SHARE_STATUS:
+        return Object.assign({}, state, {savingShareData: action.savingShareData});
     default:
         return state;
     }
@@ -71,10 +76,21 @@ const closeShareModal = () => ({
     type: CLOSE_SHARE_MODAL,
 })
 
-const setShare = (canShare) => ({
+const setShare = (shareData) => ({
     type:SET_SHARE,
-    canShare: canShare
+    shareData: shareData,
 })
+
+const startSavingShareData = () => ({
+    type: SET_SAVING_SHARE_STATUS,
+    savingShareData: true,
+})
+
+const endSavingShareData = () => ({
+    type: SET_SAVING_SHARE_STATUS,
+    savingShareData: false,
+})
+
 
 export {
     reducer as default,
@@ -83,4 +99,6 @@ export {
     openShareModal,
     closeShareModal,
     setShare,
+    startSavingShareData,
+    endSavingShareData,
 };
