@@ -303,7 +303,6 @@ class H5 extends React.Component {
                           className={classNames(styles.rightBtn, styles.directionBtns, {[styles.active]: this.props.right})}
                       />
                   </div>
-
                   <div
                       onTouchStart={this.handleSpaceStart}
                       onTouchEnd={this.handleSpaceEnd}
@@ -313,6 +312,17 @@ class H5 extends React.Component {
                        className={classNames(styles.spaceBtn, {[styles.active]: this.props.space})}
                   ></div>
               </div>
+              {
+                  this.props.projectDesc ? (
+                      <div className={styles['description-container']} style={{width: `${this.width}px`}}>
+                      <div className={styles['description-title']}>
+                          操作说明：
+                      </div>
+                      <div className={styles['description-content']}>
+                          {this.props.projectDesc}
+                      </div>
+                  </div>) : null
+              }
               <div className={styles['love-container']}>
                   <div className={classNames(styles['love-btn'], {[styles.active]: this.props.isLove})} onClick={this.handleClickLove}>
                       <img src={loveImg} className={styles['love-img']} />
@@ -345,6 +355,7 @@ const mapStateToProps = state => {
         projectTitle: state.scratchGui.projectTitle ? state.scratchGui.projectTitle : '无名作品',
         projectAuthor: state.scratchGui.h5.meta.author ? state.scratchGui.h5.meta.author : '无名作者',
         projectThumbnail:  state.scratchGui.h5.meta.thumbnail ? state.scratchGui.h5.meta.thumbnail : '',
+        projectDesc: state.scratchGui.h5.meta.description ? state.scratchGui.h5.meta.description: '',
         vm: state.scratchGui.vm,
         up: state.scratchGui.h5.up,
         down: state.scratchGui.h5.down,

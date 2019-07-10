@@ -40,11 +40,11 @@
 
 .project-info {
     text-align: center;
-    padding: 40px 0 10px 0;
+    padding: 25px 0 0px 0;
 }
 
 .project-info > div {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .project-title {
@@ -62,7 +62,7 @@
 .controller-container {
     background-color: #323238;
     position: relative;
-    margin: 20px auto 0 auto;
+    margin: 5px auto 0 auto;
 }
 
 .controller-container::after {
@@ -216,5 +216,45 @@
 .love-tips {
     margin: 5px 0;
     text-align:center;
+    color: #999;
+}
+
+.description-container {
+    text-align: left;
+    padding: 0 2px;
+    margin: 20px auto 0 auto;
+}
+
+.description-title {
+    position: relative;
+    color: #222;
+    font-size: 16px;
+    line-height: 16px;
+    margin-bottom: 10px;
+    padding-left: 8px;
+}
+
+.description-title::before {
+    position: absolute;
+    content: '';
+    display: block;
+    height: 6px;
+    width: 6px;
+    left: 0;
+    top: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background-color: orange;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.description-content {
+    font-size: 14px;
+    padding-left: 25px;
     color: #999;
 }
