@@ -3,6 +3,7 @@ import styles from './login.css';
 import {Form, Input, Icon, Button, message, Divider, Modal} from 'antd';
 import axios from 'axios';
 import CatImg from './cat.png';
+import Logo123 from './logo123.png';
 
 // 登录页
 class Login extends React.Component {
@@ -52,7 +53,7 @@ class Login extends React.Component {
             >
                 <Form onSubmit={this.handleSubmit}>
                     <div id={styles.loginHead}>
-                        <img src={CatImg} />
+                        <img src={Logo123} />
                         <span>欢迎回来，123的小伙伴~</span>
                     </div>
                     <Divider/>

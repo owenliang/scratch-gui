@@ -2478,6 +2478,242 @@
         }
     },
     {
+        "name": "Cat",
+        "md5": "b7853f557e4426412e64bb3da6531a99.svg",
+        "type": "sprite",
+        "tags": [
+            "animals",
+            "cat",
+            "kitten",
+            "kitty",
+            "mammal",
+            "orange",
+            "scratch cat"
+        ],
+        "info": [
+            0,
+            2,
+            1
+        ],
+        "json": {
+            "objName": "Cat",
+            "sounds": [
+                {
+                    "soundName": "Meow",
+                    "soundID": -1,
+                    "md5": "83c36d806dc92327b9e7049a565c6bff.wav",
+                    "sampleCount": 18688,
+                    "rate": 22050,
+                    "format": ""
+                }
+            ],
+            "costumes": [
+                {
+                    "costumeName": "cat-a",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "b7853f557e4426412e64bb3da6531a99.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 48,
+                    "rotationCenterY": 50
+                },
+                {
+                    "costumeName": "cat-b",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "e6ddc55a6ddd9cc9d84fe0b4c21e016f.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 46,
+                    "rotationCenterY": 53
+                }
+            ],
+            "currentCostumeIndex": 0,
+            "scratchX": 24,
+            "scratchY": 16,
+            "scale": 1,
+            "direction": 90,
+            "rotationStyle": "normal",
+            "isDraggable": false,
+            "visible": true,
+            "spriteInfo": {}
+        }
+    },
+    {
+        "name": "Cat 2",
+        "md5": "01ae57fd339529445cb890978ef8a054.svg",
+        "type": "sprite",
+        "tags": [
+            "cat",
+            "kitty",
+            "kitten",
+            "animals",
+            "mammal"
+        ],
+        "info": [
+            0,
+            1,
+            1
+        ],
+        "json": {
+            "objName": "Cat 2",
+            "sounds": [
+                {
+                    "soundName": "meow2",
+                    "soundID": -1,
+                    "md5": "cf51a0c4088942d95bcc20af13202710.wav",
+                    "sampleCount": 6512,
+                    "rate": 11025,
+                    "format": ""
+                }
+            ],
+            "costumes": [
+                {
+                    "costumeName": "cat 2",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "01ae57fd339529445cb890978ef8a054.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 87,
+                    "rotationCenterY": 39
+                }
+            ],
+            "currentCostumeIndex": 0,
+            "scratchX": -71,
+            "scratchY": 1,
+            "scale": 1,
+            "direction": 90,
+            "rotationStyle": "normal",
+            "isDraggable": false,
+            "visible": true,
+            "spriteInfo": {}
+        }
+    },
+    {
+        "name": "Cat Flying",
+        "md5": "bf6b9f91e6928be67eda5154ca5fb2c6.svg",
+        "type": "sprite",
+        "tags": [
+            "animals",
+            "cat",
+            "kitty",
+            "kitten"
+        ],
+        "info": [
+            0,
+            2,
+            1
+        ],
+        "json": {
+            "objName": "Cat Flying",
+            "sounds": [
+                {
+                    "soundName": "Pop",
+                    "soundID": -1,
+                    "md5": "83a9787d4cb6f3b7632b4ddfebf74367.wav",
+                    "sampleCount": 258,
+                    "rate": 11025,
+                    "format": ""
+                }
+            ],
+            "costumes": [
+                {
+                    "costumeName": "cat flying-a",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "bf6b9f91e6928be67eda5154ca5fb2c6.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 55,
+                    "rotationCenterY": 37
+                },
+                {
+                    "costumeName": "cat flying-b",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "6a5f707419e619463135f5bae599fa5b.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 44,
+                    "rotationCenterY": 46
+                }
+            ],
+            "currentCostumeIndex": 0,
+            "scratchX": -53,
+            "scratchY": -14,
+            "scale": 1,
+            "direction": 90,
+            "rotationStyle": "normal",
+            "isDraggable": false,
+            "visible": true,
+            "spriteInfo": {}
+        }
+    },
+    {
+        "name": "Catcher",
+        "md5": "27c88c54a59b9fff7e3e4763a6e9874e.svg",
+        "type": "sprite",
+        "tags": [
+            "baseball",
+            "sports",
+            "people",
+            "alex eben meyer"
+        ],
+        "info": [
+            0,
+            4,
+            1
+        ],
+        "json": {
+            "objName": "Catcher",
+            "sounds": [
+                {
+                    "soundName": "pop",
+                    "soundID": -1,
+                    "md5": "83a9787d4cb6f3b7632b4ddfebf74367.wav",
+                    "sampleCount": 258,
+                    "rate": 11025,
+                    "format": ""
+                }
+            ],
+            "costumes": [
+                {
+                    "costumeName": "catcher-a",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "27c88c54a59b9fff7e3e4763a6e9874e.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 41,
+                    "rotationCenterY": 51
+                },
+                {
+                    "costumeName": "catcher-b",
+                    "baseLayerID": 0,
+                    "baseLayerMD5": "799a822cffc9460c0bf1b387cbd5e06b.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 41,
+                    "rotationCenterY": 47
+                },
+                {
+                    "costumeName": "catcher-c",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "a6f2bf8b354e8d1a789f8e6f83133d02.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 60,
+                    "rotationCenterY": 87
+                },
+                {
+                    "costumeName": "catcher-d",
+                    "baseLayerID": -1,
+                    "baseLayerMD5": "c86af45d9168bfb81259e5bb40be1778.svg",
+                    "bitmapResolution": 1,
+                    "rotationCenterX": 86,
+                    "rotationCenterY": 46
+                }
+            ],
+            "currentCostumeIndex": 0,
+            "scratchX": -6,
+            "scratchY": 70,
+            "scale": 1,
+            "direction": 90,
+            "rotationStyle": "normal",
+            "isDraggable": false,
+            "visible": true,
+            "spriteInfo": {}
+        }
+    },
+    {
         "name": "Centaur",
         "md5": "45c1890ae0ab41f24f67ea74bec006c9.svg",
         "type": "sprite",

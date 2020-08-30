@@ -87,8 +87,8 @@ class H5 extends React.Component {
 
         // 分享给朋友
         wx.updateAppMessageShareData({
-            title: `Scratch作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
-            desc: `编程达人${this.props.projectAuthor}创作的scratch小游戏，快来玩吧~`, // 分享描述
+            title: `图形化编程作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
+            desc: `编程达人${this.props.projectAuthor}创作的小游戏，快来玩吧~`, // 分享描述
             link: window.location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: projectThumbnail, // 分享图标
             success: function () {
@@ -98,7 +98,7 @@ class H5 extends React.Component {
         })
         // 分享到朋友圈
         wx.updateTimelineShareData({
-            title: `Scratch作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
+            title: `图形化编程作品 《${this.props.projectTitle}》 -  123少儿编程`, // 分享标题
             link: window.location.href, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
             imgUrl: projectThumbnail, // 分享图标
             success: function () {
