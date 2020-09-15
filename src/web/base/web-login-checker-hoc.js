@@ -26,6 +26,8 @@ const WebLoginCheckerHOC = function (WrappedComponent) {
                     if (r['error_code'] == 0) {
                         this.props.onUpdateUserInfo(r['data']);
                         return;
+                    } else {
+                        window.location.href = 'https://class.kids123code.com/local/oauth/login.php?client_id=code.kids123code.com&response_type=code';
                     }
                 }
             });

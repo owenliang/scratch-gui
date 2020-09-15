@@ -153,6 +153,7 @@ class MenuBar extends React.Component {
             'restoreOptionMessage',
             'onSaveProject',
             'handleTitleChanged',
+            'handleOauthLogin',
         ]);
     }
     componentDidMount () {
@@ -238,6 +239,9 @@ class MenuBar extends React.Component {
     }
     handleTitleChanged(newTitle) {
         this.props.onUpdateProjectTitle(newTitle);
+    }
+    handleOauthLogin() {
+        window.location.href = 'https://class.kids123code.com/local/oauth/login.php?client_id=code.kids123code.com&response_type=code';
     }
     onSaveProject() {
         // 登录校验
@@ -530,7 +534,7 @@ class MenuBar extends React.Component {
                                 </MenuBarMenu>
                             </div>) :
                             // 未登录
-                            (<div className={classNames(styles.menuBarItem, styles.hoverable)} onClick={this.props.onClickMyLogin}>登录</div>)
+                            (<div className={classNames(styles.menuBarItem, styles.hoverable)} onClick={this.handleOauthLogin}>登录</div>)
                     }
                 </div>
             </Box>
