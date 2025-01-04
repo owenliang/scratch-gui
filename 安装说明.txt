@@ -1,0 +1,8 @@
+
+
+npm 18版本
+export NODE_OPTIONS=--openssl-legacy-provider
+npm i npm@6 -g
+npm config set registry https://registry.npmmirror.com
+npm install
+NODE_ENV=production npm run build

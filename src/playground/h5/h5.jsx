@@ -83,7 +83,7 @@ class H5 extends React.Component {
     }
 
     updateWxShareData() {
-        let projectThumbnail =  this.props.projectThumbnail ? `https:${this.props.projectThumbnail}` : 'https://assets.scratch.kids123code.com/wx_share.png';
+        let projectThumbnail =  this.props.projectThumbnail ? `https:${this.props.projectThumbnail}` : 'https://assets2-scratch.kids123code.com/wx_share.png';
 
         // 分享给朋友
         wx.updateAppMessageShareData({

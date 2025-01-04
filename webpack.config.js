@@ -168,7 +168,7 @@ module.exports = [
         output: {
             path: path.resolve(__dirname, 'build'),
             filename: '[name].[chunkhash].js',
-            publicPath: process.env.NODE_ENV === 'production' ? 'https://assets.scratch.kids123code.com/webpack/' + now + '/' : '/'
+            publicPath: '/'
         },
         externals: {
             React: 'react',
@@ -247,19 +247,7 @@ module.exports = [
                 from: 'extension-worker.{js,js.map}',
                 context: 'node_modules/scratch-vm/dist/web'
             }])
-        ].concat(
-            process.env.NODE_ENV === 'production' ? [
-                new WebpackAliOSSPlugin({
-                    accessKeyId: 'LTAIPM8Vp5yZ6d6y',
-                    accessKeySecret: 'rpYZQReTmkqGfapx5J2uugu91yf1oG',
-                    region: 'oss-cn-qingdao',
-                    bucket: 'assets-scratch',
-                    exclude: [/.*\.html$/],
-                    deleteAll: false,
-                    format: 'webpack/' + now,
-                })
-            ] : []
-        ))
+        ])
     })
 ].concat(
     process.env.NODE_ENV === 'production' || process.env.BUILD_MODE === 'dist' ? (
