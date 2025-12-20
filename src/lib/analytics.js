@@ -1,10 +1,11 @@
-import GoogleAnalytics from 'react-ga';
+// Google Analytics removed - no longer needed
+// Export dummy object to maintain compatibility
+const analytics = {
+    pageview: () => {},
+    event: () => {},
+    initialize: () => {},
+    timing: () => {},
+    exception: () => {}
+};
 
-GoogleAnalytics.initialize(process.env.GA_ID || window.GA_ID, {
-    debug: (process.env.NODE_ENV !== 'production'),
-    titleCase: true,
-    sampleRate: (process.env.NODE_ENV === 'production') ? 100 : 0,
-    forceSSL: true
-});
-
-export default GoogleAnalytics;
+export default analytics;

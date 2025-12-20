@@ -197,8 +197,7 @@ module.exports = [
         plugins: base.plugins.concat([
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"' + process.env.NODE_ENV + '"',
-                'process.env.DEBUG': Boolean(process.env.DEBUG),
-                'process.env.GA_ID': '"' + (process.env.GA_ID || 'UA-106141066-2') + '"'
+                'process.env.DEBUG': Boolean(process.env.DEBUG)
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
